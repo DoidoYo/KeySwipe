@@ -14,6 +14,7 @@
 		9326089D279F7F8A00BFCFC8 /* PTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089B279F7F8A00BFCFC8 /* PTimer.swift */; };
 		9326089E279F7F8A00BFCFC8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089C279F7F8A00BFCFC8 /* Logger.swift */; };
 		932608A0279F87D500BFCFC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089F279F87D500BFCFC8 /* AppDelegate.swift */; };
+		932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */ = {isa = PBXBuildFile; productRef = 932F5E5E27A35E0C00F780F3 /* Swindler */; };
 		9335658327A323FB000930DC /* WindowMover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658227A323FB000930DC /* WindowMover.swift */; };
 		9335658627A34862000930DC /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658527A34862000930DC /* EventMonitor.swift */; };
 		93986BC0279FA0DD00A5D832 /* FunctionalityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */; };
@@ -30,7 +31,6 @@
 		93D9593F279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9593E279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift */; };
 		93D9594C279F29CD00A1357E /* QuickPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594B279F29CD00A1357E /* QuickPickerView.swift */; };
 		93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594D279F29EA00A1357E /* AppSearcher.swift */; };
-		93D95951279F2A1000A1357E /* Swindler in Frameworks */ = {isa = PBXBuildFile; productRef = 93D95950279F2A1000A1357E /* Swindler */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,7 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93D95951279F2A1000A1357E /* Swindler in Frameworks */,
+				932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,7 +230,7 @@
 			);
 			name = KeySwipe;
 			packageProductDependencies = (
-				93D95950279F2A1000A1357E /* Swindler */,
+				932F5E5E27A35E0C00F780F3 /* Swindler */,
 			);
 			productName = KeySwipe;
 			productReference = 93D9591D279F29B600A1357E /* KeySwipe.app */;
@@ -305,7 +305,7 @@
 			);
 			mainGroup = 93D95914279F29B600A1357E;
 			packageReferences = (
-				93D9594F279F2A1000A1357E /* XCRemoteSwiftPackageReference "Swindler" */,
+				932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */,
 			);
 			productRefGroup = 93D9591E279F29B600A1357E /* Products */;
 			projectDirPath = "";
@@ -690,7 +690,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		93D9594F279F2A1000A1357E /* XCRemoteSwiftPackageReference "Swindler" */ = {
+		932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tmandry/Swindler";
 			requirement = {
@@ -701,9 +701,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		93D95950279F2A1000A1357E /* Swindler */ = {
+		932F5E5E27A35E0C00F780F3 /* Swindler */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 93D9594F279F2A1000A1357E /* XCRemoteSwiftPackageReference "Swindler" */;
+			package = 932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */;
 			productName = Swindler;
 		};
 /* End XCSwiftPackageProductDependency section */
