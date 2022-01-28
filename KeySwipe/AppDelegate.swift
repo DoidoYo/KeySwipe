@@ -18,24 +18,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     
     var swindler: Swindler.State!
     var functionalityManager: FunctionalityManager? = nil
+    
+    private var preferencesWindow:NSWindow?
+    private var preferencesWindowController:NSWindowController?
+    
     static var focusedWindow: Window? = nil
-    static private var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
+    static var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
     static var applications:Applications = Applications()
     
     var statusItem:NSStatusItem!// = NSStatusBar.system.statusItem(withLength: 28)
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         //load apps
-        
-        AppDelegate.applications.array[4] = getApp(name:"spotify", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[0] = getApp(name: "calendar", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[1] = getApp(name: "chrome", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[2] = getApp(name: "onenote", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[6] = getApp(name: "spark", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[3] = getApp(name: "message", appData: AppDelegate.applicationMetaData)
-        AppDelegate.applications.array[5] = getApp(name: "slack", appData: AppDelegate.applicationMetaData)
-        
-        //        AppDelegate.applications.array[5] = getApp(name: "finder", appData: AppDelegate.applicationMetaData)
         
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = self.statusItem.button {
@@ -86,8 +80,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         
         menu.addItem(NSMenuItem.separator())
         
-//        let preferencesMenuItem = NSMenuItem(title: "Preferences...", action: #selector(AppDelegate.openPreferencesWindow(_:)), keyEquivalent: ",")
-        let preferencesMenuItem = NSMenuItem(title: "Preferences...", action: nil, keyEquivalent: ",")
+        let preferencesMenuItem = NSMenuItem(title: "Preferences...", action: #selector(AppDelegate.openPreferencesWindow(_:)), keyEquivalent: ",")
+//        let preferencesMenuItem = NSMenuItem(title: "Preferences...",action: <#T##Selector?#>, keyEquivalent: ",")
         menu.addItem(preferencesMenuItem)
         
         menu.addItem(NSMenuItem.separator())
@@ -97,6 +91,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         
         self.statusItem.menu = menu
         self.statusItem.menu?.delegate = self
+    }
+    
+    @objc func openPreferencesWindow(_ sender: Any?) {
+        
+        if self.preferencesWindowController == nil {
+            let window = NSWindow(contentRect: NSRect.zero, styleMask: [.closable,.titled, .resizable, .fullSizeContentView], backing: .buffered, defer: true)
+            let view = PreferencesView(allApplication: AppDelegate.applicationMetaData).environmentObject(Preferences.shared.applications)
+            window.contentView = NSHostingView(rootView: view)
+            self.preferencesWindowController = NSWindowController(window: window)
+        }
+        self.preferencesWindowController?.window?.center()
+        self.preferencesWindowController?.showWindow(self)
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
     
     func onTrigger() { //pass down modifier keys on trigger
@@ -132,7 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         }
     }
     
-    func getApp(name:String,appData: [Application]) -> Application {
+    func getAppfff(name:String,appData: [Application]) -> Application? {
         let f = appData.filter{$0.name.lowercased().contains(name)}
         return f[0]
     }

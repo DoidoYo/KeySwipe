@@ -31,7 +31,7 @@ class QuickPicker {
     init() {
         if QuickPicker.window == nil {
             QuickPicker.window = NSWindow(contentRect: CGRect.zero, styleMask: [NSWindow.StyleMask.borderless], backing: NSWindow.BackingStoreType.buffered, defer: true)
-            QuickPicker.window.setFrame(CGRect(x: 100, y: 100, width: 0, height: 0), display: true)
+            QuickPicker.window.setFrame(CGRect(x: 0, y: 0, width: 0, height: 0), display: true)
             QuickPicker.window.level = .popUpMenu
             QuickPicker.window.isOpaque = false
             
@@ -48,7 +48,7 @@ class QuickPicker {
             QuickPicker.window.isRestorable=false
             
             
-            let contentView = QuickPickerView().environmentObject(AppDelegate.applications).frame(width: 210, height: 210).edgesIgnoringSafeArea(.top)
+            let contentView = QuickPickerView().environmentObject(Preferences.shared.applications).edgesIgnoringSafeArea(.top)
             QuickPicker.window.contentView = NSHostingView(rootView: contentView)
             
            
@@ -77,7 +77,7 @@ class QuickPicker {
         
         if (pVec-self.initialMousePosition).length() < Preferences.shared.quickPickerShowDistance {
             if previousSelection != -1 {
-                AppDelegate.applications.array[previousSelection]?.selected = false
+                Preferences.shared.applications.array[previousSelection]?.selected = false
                 previousSelection = -1
             }
             return
@@ -111,10 +111,10 @@ class QuickPicker {
         
         if previousSelection != intNew {
             if previousSelection != -1 {
-            AppDelegate.applications.array[previousSelection]?.selected = false
+                Preferences.shared.applications.array[previousSelection]?.selected = false
             }
             if intNew != -1 {
-            AppDelegate.applications.array[intNew]?.selected = true
+                Preferences.shared.applications.array[intNew]?.selected = true
             }
             previousSelection = intNew
         }
@@ -123,7 +123,7 @@ class QuickPicker {
     func stop() {
         //open program
         if previousSelection != -1 {
-            if let app = AppDelegate.applications.array[previousSelection] {
+            if let app = Preferences.shared.applications.array[previousSelection] {
                 let configuration = NSWorkspace.OpenConfiguration()
                 configuration.activates=true
                 NSWorkspace.shared.openApplication(at: app.url, configuration: configuration) { rapp, error in
@@ -138,8 +138,8 @@ class QuickPicker {
     }
     
     func clearAppSelection() {
-        for (i,_) in AppDelegate.applications.array.enumerated() {
-            AppDelegate.applications.array[i]?.selected = false
+        for (i,_) in Preferences.shared.applications.array.enumerated() {
+            Preferences.shared.applications.array[i]?.selected = false
         }
     }
 }

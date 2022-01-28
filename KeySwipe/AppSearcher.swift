@@ -61,7 +61,7 @@ class Applications:ObservableObject {
     @Published var array = [Application?](repeating: nil, count: 8)
 }
 
-struct Application {
+struct Application: Hashable {
     var name: String
     var url: URL
     var icon: NSImage
