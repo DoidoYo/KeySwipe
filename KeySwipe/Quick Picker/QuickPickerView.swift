@@ -30,7 +30,7 @@ struct QuickPickerView: View {
                 ButtonImage(application: applications.array[6])
                 ButtonImage(application: applications.array[7])
             }
-        }.padding(.all, 5).background(Color.init(hex: "D3D3D3")).cornerRadius(6)
+        }.padding(.all, 5).background(Color.init(hex: "D3D3D3")).cornerRadius(6).frame(width: 210, height: 210)
     }
 }
 

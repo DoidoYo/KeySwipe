@@ -21,6 +21,9 @@ final class Preferences {
     private static let key_quickPickerShowDistance = "quickPickerShowDistance"
     private static let default_quickPickerShowDistance:Double = 30
     
+    private static let key_applicationsa = "applications"
+    private static let default_applicationsa = [String](repeating: "", count: 8)
+    
     init() {
         let defaults = UserDefaults.standard
         
@@ -47,6 +50,19 @@ final class Preferences {
         } else {
             self.quickPickerShowDistance = quickPickerShowDistance!
         }
+        
+
+        let applicationsa = defaults.object(forKey: Preferences.key_applicationsa) as? [String]
+        if applicationsa == nil {
+            self.applicationsa = Preferences.default_applicationsa
+            UserDefaults.standard.set(self.applicationsa, forKey: Preferences.key_applicationsa)
+        } else {
+            self.applicationsa = applicationsa!
+        }
+        for i in 0..<self.applicationsa.count {
+            let a = AppDelegate.applicationMetaData.filter{($0.name == self.applicationsa[i])}
+            self.applications.array[i] = (a.count > 0) ? a.first : nil
+        }
     }
 
     var trackpadDeadzone: Double {
@@ -68,6 +84,18 @@ final class Preferences {
             UserDefaults.standard.set(self.quickPickerShowDistance, forKey: Preferences.key_quickPickerShowDistance)
 //            self.delegate?.onPreferencesChanged()
         }
+    }
+    
+    var applications: Applications = Applications()
+    
+    var applicationsa: [String]
+    
+    func saveApps() {
+        for i in 0..<self.applications.array.count {
+            self.applicationsa[i] = (self.applications.array[i] != nil) ? self.applications.array[i]!.name : ""
+        }
+        
+        UserDefaults.standard.set(self.applicationsa, forKey: Preferences.key_applicationsa)
     }
     
     func reset() {
