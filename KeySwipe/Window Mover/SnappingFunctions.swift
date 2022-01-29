@@ -60,7 +60,6 @@ func getSnapLocationToScreen(location: SnapLocation, screen: Screen) -> CGRect {
         return CGRect(x: frame.minX + (frame.width/2), y: frame.minY, width: frame.width/2, height: frame.height/2)
     case .NONE:
         break
-        
     case .THIRD_MIDDLE:
         return CGRect(x: frame.minX + (frame.width/3), y: frame.minY, width: frame.width/3, height: frame.height)
     case .THIRD_LEFT:
@@ -72,8 +71,8 @@ func getSnapLocationToScreen(location: SnapLocation, screen: Screen) -> CGRect {
     case .THIRD_MIDDLE_LEFT:
         return CGRect(x: frame.minX, y: frame.minY, width: 2*frame.width/3, height: frame.height)
         
-//    default:
-//        break
+    default:
+        break
     }
     return CGRect(x: 0, y: 0, width: 0, height: 0)
 }

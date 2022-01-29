@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		930578BB27A3585F00138848 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930578BA27A3585F00138848 /* PreferencesView.swift */; };
+		930578BB27A3585F00138848 /* PreferencesView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930578BA27A3585F00138848 /* PreferencesView2.swift */; };
 		93260891279F7BC100BFCFC8 /* GestureWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260890279F7BC100BFCFC8 /* GestureWindow.swift */; };
 		93260893279F7CBA00BFCFC8 /* QuickPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260892279F7CBA00BFCFC8 /* QuickPicker.swift */; };
 		93260896279F7D9E00BFCFC8 /* KeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */; };
@@ -22,7 +22,8 @@
 		93986BC4279FB6C400A5D832 /* CGVectorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC3279FB6C400A5D832 /* CGVectorExtension.swift */; };
 		93986BC627A0553900A5D832 /* SnapOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC527A0553900A5D832 /* SnapOverlayWindow.swift */; };
 		93986BC827A05AA800A5D832 /* SnappingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC727A05AA800A5D832 /* SnappingFunctions.swift */; };
-		93986BCA27A0636000A5D832 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC927A0636000A5D832 /* Preferences.swift */; };
+		93986BCA27A0636000A5D832 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC927A0636000A5D832 /* UserPreferences.swift */; };
+		93A2340227A5C224002542BF /* ImageButtonPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A2340127A5C224002542BF /* ImageButtonPicker.swift */; };
 		93D95921279F29B600A1357E /* KeySwipeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D95920279F29B600A1357E /* KeySwipeApp.swift */; };
 		93D95925279F29B600A1357E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D95924279F29B600A1357E /* Assets.xcassets */; };
 		93D95928279F29B600A1357E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D95927279F29B600A1357E /* Preview Assets.xcassets */; };
@@ -31,6 +32,11 @@
 		93D9593F279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9593E279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift */; };
 		93D9594C279F29CD00A1357E /* QuickPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594B279F29CD00A1357E /* QuickPickerView.swift */; };
 		93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594D279F29EA00A1357E /* AppSearcher.swift */; };
+		93E5C64327A457A6005103BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93E5C64027A456E0005103BA /* Main.storyboard */; };
+		93E5C64527A45D3A005103BA /* PreferencesGeneralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */; };
+		93E5C64827A45E3C005103BA /* Preferences in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5C64727A45E3C005103BA /* Preferences */; };
+		93E5C64B27A4734C005103BA /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5C64A27A4734C005103BA /* LaunchAtLogin */; };
+		93E5C64F27A489A2005103BA /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5C64E27A489A2005103BA /* PreferencesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		930578BA27A3585F00138848 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		930578BA27A3585F00138848 /* PreferencesView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView2.swift; sourceTree = "<group>"; };
 		93260890279F7BC100BFCFC8 /* GestureWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureWindow.swift; sourceTree = "<group>"; };
 		93260892279F7CBA00BFCFC8 /* QuickPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPicker.swift; sourceTree = "<group>"; };
 		93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListener.swift; sourceTree = "<group>"; };
@@ -66,7 +72,8 @@
 		93986BC3279FB6C400A5D832 /* CGVectorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGVectorExtension.swift; sourceTree = "<group>"; };
 		93986BC527A0553900A5D832 /* SnapOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapOverlayWindow.swift; sourceTree = "<group>"; };
 		93986BC727A05AA800A5D832 /* SnappingFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnappingFunctions.swift; sourceTree = "<group>"; };
-		93986BC927A0636000A5D832 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		93986BC927A0636000A5D832 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
+		93A2340127A5C224002542BF /* ImageButtonPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageButtonPicker.swift; sourceTree = "<group>"; };
 		93D9591D279F29B600A1357E /* KeySwipe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeySwipe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93D95920279F29B600A1357E /* KeySwipeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySwipeApp.swift; sourceTree = "<group>"; };
 		93D95924279F29B600A1357E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -79,6 +86,9 @@
 		93D9593E279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySwipeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		93D9594B279F29CD00A1357E /* QuickPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickPickerView.swift; sourceTree = "<group>"; };
 		93D9594D279F29EA00A1357E /* AppSearcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSearcher.swift; sourceTree = "<group>"; };
+		93E5C64127A456E0005103BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ../../../../Downloads/JustClick/Ambar/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesGeneralView.swift; sourceTree = "<group>"; };
+		93E5C64E27A489A2005103BA /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +96,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93E5C64B27A4734C005103BA /* LaunchAtLogin in Frameworks */,
 				932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */,
+				93E5C64827A45E3C005103BA /* Preferences in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,13 +175,17 @@
 				9326089F279F87D500BFCFC8 /* AppDelegate.swift */,
 				9335658527A34862000930DC /* EventMonitor.swift */,
 				93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */,
-				930578BA27A3585F00138848 /* PreferencesView.swift */,
+				930578BA27A3585F00138848 /* PreferencesView2.swift */,
+				93E5C64E27A489A2005103BA /* PreferencesView.swift */,
+				93A2340127A5C224002542BF /* ImageButtonPicker.swift */,
+				93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */,
 				93F8C34427A1E13000C1A3F4 /* Window Mover */,
 				93260894279F7CD800BFCFC8 /* Quick Picker */,
 				9335658427A3286C000930DC /* Gesture Window */,
 				93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */,
 				93D9594D279F29EA00A1357E /* AppSearcher.swift */,
-				93986BC927A0636000A5D832 /* Preferences.swift */,
+				93986BC927A0636000A5D832 /* UserPreferences.swift */,
+				93E5C64027A456E0005103BA /* Main.storyboard */,
 				93D95924279F29B600A1357E /* Assets.xcassets */,
 				93D95929279F29B600A1357E /* KeySwipe.entitlements */,
 				9326089A279F7F7E00BFCFC8 /* Utils */,
@@ -223,6 +239,7 @@
 				93D95919279F29B600A1357E /* Sources */,
 				93D9591A279F29B600A1357E /* Frameworks */,
 				93D9591B279F29B600A1357E /* Resources */,
+				93E5C64C27A47823005103BA /* Copy “Launch at Login Helper” */,
 			);
 			buildRules = (
 			);
@@ -231,6 +248,8 @@
 			name = KeySwipe;
 			packageProductDependencies = (
 				932F5E5E27A35E0C00F780F3 /* Swindler */,
+				93E5C64727A45E3C005103BA /* Preferences */,
+				93E5C64A27A4734C005103BA /* LaunchAtLogin */,
 			);
 			productName = KeySwipe;
 			productReference = 93D9591D279F29B600A1357E /* KeySwipe.app */;
@@ -306,6 +325,8 @@
 			mainGroup = 93D95914279F29B600A1357E;
 			packageReferences = (
 				932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */,
+				93E5C64627A45E3C005103BA /* XCRemoteSwiftPackageReference "Preferences" */,
+				93E5C64927A4734C005103BA /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 			);
 			productRefGroup = 93D9591E279F29B600A1357E /* Products */;
 			projectDirPath = "";
@@ -323,6 +344,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93E5C64327A457A6005103BA /* Main.storyboard in Resources */,
 				93D95928279F29B600A1357E /* Preview Assets.xcassets in Resources */,
 				93D95925279F29B600A1357E /* Assets.xcassets in Resources */,
 			);
@@ -344,6 +366,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		93E5C64C27A47823005103BA /* Copy “Launch at Login Helper” */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy “Launch at Login Helper”";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILT_PRODUCTS_DIR}/LaunchAtLogin_LaunchAtLogin.bundle/Contents/Resources/copy-helper-swiftpm.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		93D95919279F29B600A1357E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -354,18 +397,21 @@
 				93260891279F7BC100BFCFC8 /* GestureWindow.swift in Sources */,
 				93986BC627A0553900A5D832 /* SnapOverlayWindow.swift in Sources */,
 				93D9594C279F29CD00A1357E /* QuickPickerView.swift in Sources */,
+				93E5C64F27A489A2005103BA /* PreferencesView.swift in Sources */,
 				93986BC2279FA4A500A5D832 /* GestureWindowManager.swift in Sources */,
 				93260893279F7CBA00BFCFC8 /* QuickPicker.swift in Sources */,
 				9326089E279F7F8A00BFCFC8 /* Logger.swift in Sources */,
+				93E5C64527A45D3A005103BA /* PreferencesGeneralView.swift in Sources */,
 				93986BC0279FA0DD00A5D832 /* FunctionalityManager.swift in Sources */,
 				93986BC4279FB6C400A5D832 /* CGVectorExtension.swift in Sources */,
 				93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */,
 				93260896279F7D9E00BFCFC8 /* KeyboardListener.swift in Sources */,
 				932608A0279F87D500BFCFC8 /* AppDelegate.swift in Sources */,
-				930578BB27A3585F00138848 /* PreferencesView.swift in Sources */,
+				930578BB27A3585F00138848 /* PreferencesView2.swift in Sources */,
 				9335658327A323FB000930DC /* WindowMover.swift in Sources */,
 				9335658627A34862000930DC /* EventMonitor.swift in Sources */,
-				93986BCA27A0636000A5D832 /* Preferences.swift in Sources */,
+				93986BCA27A0636000A5D832 /* UserPreferences.swift in Sources */,
+				93A2340227A5C224002542BF /* ImageButtonPicker.swift in Sources */,
 				93D95921279F29B600A1357E /* KeySwipeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,6 +447,17 @@
 			targetProxy = 93D95939279F29B700A1357E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		93E5C64027A456E0005103BA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				93E5C64127A456E0005103BA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		93D95940279F29B700A1357E /* Debug */ = {
@@ -535,6 +592,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KeySwipe/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -564,6 +623,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KeySwipe/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -698,6 +759,22 @@
 				kind = branch;
 			};
 		};
+		93E5C64627A45E3C005103BA /* XCRemoteSwiftPackageReference "Preferences" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Preferences";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		93E5C64927A4734C005103BA /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -705,6 +782,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */;
 			productName = Swindler;
+		};
+		93E5C64727A45E3C005103BA /* Preferences */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93E5C64627A45E3C005103BA /* XCRemoteSwiftPackageReference "Preferences" */;
+			productName = Preferences;
+		};
+		93E5C64A27A4734C005103BA /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93E5C64927A4734C005103BA /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;
+			productName = LaunchAtLogin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -10,8 +10,9 @@ import AppKit
 import SwiftUI
 import Cocoa
 import Swindler
+import Preferences
 
-//@NSApplicationMain
+@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NSMenuDelegate {
     
     var keyboardListener:KeyboardListener!
@@ -19,8 +20,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     var swindler: Swindler.State!
     var functionalityManager: FunctionalityManager? = nil
     
-    private var preferencesWindow:NSWindow?
-    private var preferencesWindowController:NSWindowController?
+    
+    private lazy var preferencesWindowController = PreferencesWindowController(
+        preferencePanes: [
+            PreferencesViewController()
+        ],
+        style: .toolbarItems,
+        animated: true,
+        hidesToolbarForSingleItem: false
+    )
     
     static var focusedWindow: Window? = nil
     static var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
@@ -30,7 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         //load apps
-        
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = self.statusItem.button {
             button.image = #imageLiteral(resourceName: "menubar")
@@ -71,17 +78,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         let menu = NSMenu()
         menu.autoenablesItems = false
         
-//        let aboutMenuItem = NSMenuItem(title: "About Penc", action: #selector(AppDelegate.openAboutWindow(_:)), keyEquivalent: "")
-//        menu.addItem(aboutMenuItem)
+        //        let aboutMenuItem = NSMenuItem(title: "About Penc", action: #selector(AppDelegate.openAboutWindow(_:)), keyEquivalent: "")
+        //        menu.addItem(aboutMenuItem)
         
-//        let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: #selector(AppDelegate.checkForUpdates(_:)), keyEquivalent: "")
+        //        let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: #selector(AppDelegate.checkForUpdates(_:)), keyEquivalent: "")
         let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: nil, keyEquivalent: "")
         menu.addItem(checkForUpdatesMenuItem)
         
         menu.addItem(NSMenuItem.separator())
         
         let preferencesMenuItem = NSMenuItem(title: "Preferences...", action: #selector(AppDelegate.openPreferencesWindow(_:)), keyEquivalent: ",")
-//        let preferencesMenuItem = NSMenuItem(title: "Preferences...",action: <#T##Selector?#>, keyEquivalent: ",")
+        //        let preferencesMenuItem = NSMenuItem(title: "Preferences...",action: <#T##Selector?#>, keyEquivalent: ",")
         menu.addItem(preferencesMenuItem)
         
         menu.addItem(NSMenuItem.separator())
@@ -94,15 +101,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     }
     
     @objc func openPreferencesWindow(_ sender: Any?) {
-        
-        if self.preferencesWindowController == nil {
-            let window = NSWindow(contentRect: NSRect.zero, styleMask: [.closable,.titled, .resizable, .fullSizeContentView], backing: .buffered, defer: true)
-            let view = PreferencesView(allApplication: AppDelegate.applicationMetaData).environmentObject(Preferences.shared.applications)
-            window.contentView = NSHostingView(rootView: view)
-            self.preferencesWindowController = NSWindowController(window: window)
-        }
-        self.preferencesWindowController?.window?.center()
-        self.preferencesWindowController?.showWindow(self)
+        //
+        preferencesWindowController.show(preferencePane: .general)
+        //        self.preferencesWindowController.showWindow(self)
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
     

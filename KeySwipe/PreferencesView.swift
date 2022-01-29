@@ -2,114 +2,49 @@
 //  PreferencesView.swift
 //  KeySwipe
 //
-//  Created by Gabriel Brito on 1/27/22.
+//  Created by Gabriel Brito on 1/28/22.
 //
 
 import SwiftUI
+import AppKit
+import Preferences
 
-struct PreferencesView: View {
+let PreferencesViewController: () -> PreferencePane = {
+    /// Wrap your custom view into `Preferences.Pane`, while providing necessary toolbar info.
     
-    @EnvironmentObject var applications:Applications
-    var allApplication:[Application]
-    @State private var appIdx = -1
+    let a = Applications()
+    a.array = UserPreferences.shared.applications.array
     
-    var body: some View {
-        HStack {
-            VStack {
-                Text("Select application")
-                VStack(spacing: 0.0) {
-                    HStack(spacing: 0.0) {
-                        ButtonImageChanger(idx: 0, allApplication: allApplication)
-                        ButtonImageChanger(idx: 1, allApplication: allApplication)
-                        ButtonImageChanger(idx: 2, allApplication: allApplication)
-                    }
-                    HStack(spacing: 0.0) {
-                        
-                        ButtonImageChanger(idx: 3, allApplication: allApplication)
-                        Spacer().frame(maxWidth: .infinity, maxHeight: .infinity)
-                        ButtonImageChanger(idx: 4, allApplication: allApplication)
-                        
-                    }
-                    HStack(spacing: 0.0) {
-                        ButtonImageChanger(idx: 5, allApplication: allApplication)
-                        ButtonImageChanger(idx: 6, allApplication: allApplication)
-                        ButtonImageChanger(idx: 7, allApplication: allApplication)
-                    }
-                }.padding(.all, 5).background(Color.init(hex: "D3D3D3")).cornerRadius(6).frame(width: 500, height: 210).environmentObject(applications)
-                
-            }.frame(width: 500, height: 300)
-        }
-        
+    let paneView = Preferences.Pane(
+        identifier: .general,
+        title: "General",
+        toolbarIcon: NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Accounts preferences")!
+    ) {
+        //        PreferencesView(allApplication: AppDelegate.applicationMetaData).environmentObject(a)
+        PreferencesView()
     }
     
+    return Preferences.PaneHostingController(pane: paneView)
 }
 
-struct ButtonImageChanger: View {
-    
-    var idx:Int
-    var allApplication:[Application]
-    @EnvironmentObject var applications:Applications
-//    @State private var appIdx = -1
-    
-    
+struct PreferencesView: View {
     var body: some View {
-        Picker(selection: $applications.array[idx]) {
-            Text("Nothing").tag(nil as Application?)
-            ForEach(0..<allApplication.count, id: \.self) { id in
-                Text(allApplication[id].name).tag(allApplication[id] as Application?)
-            }
-        } label: {
-//
-            if let application=applications.array[idx] {
-                Image(nsImage: application.icon).resizable()
-                    .frame(maxWidth: 80, maxHeight: 80)
-            } else {
-                Image(nsImage: NSImage(named: "plus")!).resizable()
-                    .frame(maxWidth: 80, maxHeight: 80)
-            }
-        }.onReceive([applications.array[idx]].publisher.first()) { value in
-            Preferences.shared.saveApps()
-        }
-        
-//        Button(action: {
-//            print("f")
-//            Picker("", selection: $appIdx) {
-//                ForEach(applications.array, id: \.self) {
-//                    Text($0!.name)
-//                }
-//            }
-//
-//        }, label: {
-//
-//
-//            //            Picker("", selection: $appIdx) {
-//            //
-//            //            }.style
-//            //
-//            if let application=applications.array[idx] {
-//                Image(nsImage: application.icon).resizable()
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            } else {
-//                Image(nsImage: NSImage(named: "plus")!).resizable()
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            }
-//        })
-//            .padding(.all, 0.0)
-//            .background(content: {
-//                Color.clear
-//                if let application = applications.array[idx] {
-//                    if application.selected {
-//                        Color.gray
-//                    }
-//                }
-//            }).cornerRadius(6.0).buttonStyle(BlueButtonStyle())
+        ImageButtonPicker()
     }
 }
 
 struct PreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        let applications =  Applications()
-        let allApplication = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
-        QuickPickerView().environmentObject(applications)
+        PreferencesView()
     }
+}
+
+func resize(image: NSImage, w: Int, h: Int) -> NSImage {
+    var destSize = NSMakeSize(CGFloat(w), CGFloat(h))
+    var newImage = NSImage(size: destSize)
+    newImage.lockFocus()
+    image.draw(in: NSMakeRect(0, 0, destSize.width, destSize.height), from: NSMakeRect(0, 0, image.size.width, image.size.height), operation: .sourceOver, fraction: CGFloat(1))
+    newImage.unlockFocus()
+    newImage.size = destSize
+    return NSImage(data: newImage.tiffRepresentation!)!
 }

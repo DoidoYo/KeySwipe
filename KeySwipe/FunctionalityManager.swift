@@ -30,11 +30,15 @@ class FunctionalityManager: GestureWindowDelegate {
             self.gestureWindows.append(gestureWindow)
         }
         
-        self.quickPicker = QuickPicker()
+        if UserPreferences.shared.quickPickerEnabled {
+            self.quickPicker = QuickPicker()
+        }
         
         //check if selected window is close and can be moved
-        if let _ = swindler.frontmostApplication.value?.focusedWindow.value {
-            self.windowMover = WindowMover(swindler: swindler)
+        if let window = swindler.frontmostApplication.value?.focusedWindow.value {
+            if !(window.isMinimized.value || window.isFullscreen.value) {
+                self.windowMover = WindowMover(swindler: swindler)
+            }
         }
     }
     

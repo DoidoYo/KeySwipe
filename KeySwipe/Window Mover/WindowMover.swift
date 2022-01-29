@@ -26,6 +26,8 @@ enum SnapLocation {
     case BOTTOM_LEFT
     case BOTTOM_RIGHT
     
+    case MINIMIZE
+    
     case NONE
     
     case THIRD_MIDDLE
@@ -59,7 +61,14 @@ class WindowMover {
     
     func onTrackpadScrollGesture(delta: (vector: CGVector, timestamp: Double, direction: SwipeDirection)) {
         if trackpadState == .aborted { return }
-        if delta.vector.length() < Preferences.shared.trackpadDeadzone { return }
+        if delta.vector.length() < UserPreferences.shared.trackpadDeadzone { return }
+        
+        //minimize window on swipe down
+        if currentLocation == .NONE && delta.direction == .DOWN {
+            let _ = AppDelegate.focusedWindow?.isMinimized.set(true)
+            self.trackpadTimedOut(haptic: false)
+            return
+        }
         
         //user held first, then moved
         if trackpadState == .modifier && previousLocation == .NONE {
@@ -118,16 +127,18 @@ class WindowMover {
         
         self.abortTimeTimeoutTask?.cancel()
         self.abortTimeTimeoutTask = DispatchWorkItem {
-            self.trackpadTimedOut()
+            self.trackpadTimedOut(haptic: true)
         }
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.abortTime, execute: self.abortTimeTimeoutTask!)
     }
     
-    func trackpadTimedOut() {
+    func trackpadTimedOut(haptic: Bool = false) {
         //double haptic for timedout
-        self.haptic.perform(.generic, performanceTime: .now)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.13) {
+        if haptic {
             self.haptic.perform(.generic, performanceTime: .now)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.13) {
+                self.haptic.perform(.generic, performanceTime: .now)
+            }
         }
         WindowMover.snapOverlayWindow.hideWindow(animated: true)
         self.trackpadState = .aborted
@@ -136,6 +147,12 @@ class WindowMover {
     }
     //if user start swiping (w/out resting finger on trackspad) this function may not be called
     func onTrackpadScrollGestureMayBegin() {
+        //prevent movement if window is minimized
+        if swindler.frontmostApplication.value?.focusedWindow.value == nil {
+            self.trackpadTimedOut(haptic: false)
+            return
+        }
+        
         self.trackpadState = .may_move
         
         let appFrame = AppDelegate.focusedWindow?.frame.value
@@ -166,12 +183,17 @@ class WindowMover {
         
         self.abortTimeTimeoutTask?.cancel()
         self.abortTimeTimeoutTask = DispatchWorkItem {
-            self.trackpadTimedOut()
+            self.trackpadTimedOut(haptic: true)
         }
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.abortTime, execute: self.abortTimeTimeoutTask!)
     }
-    
+    //aways called on any swipe or two finger move
     func onTrackpadScrollGestureBegan() {
+        //prevent movement if window is minimized
+        if swindler.frontmostApplication.value?.focusedWindow.value == nil {
+            self.trackpadTimedOut(haptic: false)
+            return
+        }
         
         switch self.trackpadState {
         case .idle:

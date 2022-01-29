@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-@main
-struct KeySwipeApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    /*  For #2 I followed the solution in https://stackoverflow.com/a/65789202/827681 */
-    var body: some Scene {
-        Settings{
-            EmptyView()
-        }
-    }
-}
+//@main
+//struct KeySwipeApp: App {
+//    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+//
+//    /*  For #2 I followed the solution in https://stackoverflow.com/a/65789202/827681 */
+//    var body: some Scene {
+//        Settings{
+////            EmptyView()
+//        }
+//    }
+//}
