@@ -111,8 +111,7 @@ final class UserPreferences:ObservableObject {
     
     var applicationsa: [String]
     
-    func saveApps(apps: Applications) {
-        self.applications.array = apps.array
+    func saveApps() {
         for i in 0..<self.applications.array.count {
             self.applicationsa[i] = (self.applications.array[i] != nil) ? self.applications.array[i]!.name : ""
         }

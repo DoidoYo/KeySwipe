@@ -8,6 +8,7 @@
 import SwiftUI
 import AppKit
 import Preferences
+import LaunchAtLogin
 
 let PreferencesViewController: () -> PreferencePane = {
     /// Wrap your custom view into `Preferences.Pane`, while providing necessary toolbar info.
@@ -28,8 +29,36 @@ let PreferencesViewController: () -> PreferencePane = {
 }
 
 struct PreferencesView: View {
+    
+    @ObservedObject var defaults = UserPreferences.shared
+    
     var body: some View {
-        ImageButtonPicker()
+        //        LaunchAtLogin.Toggle()
+        VStack {
+            LaunchAtLogin.Toggle()
+            HStack {
+                //picker view
+                VStack {
+                    HStack {
+                        ImageButtonPicker(idx: 0)
+                        ImageButtonPicker(idx: 1)
+                        ImageButtonPicker(idx: 2)
+                    }
+                    HStack {
+                        ImageButtonPicker(idx: 3)
+                        Spacer().frame(maxWidth: .infinity, maxHeight: .infinity)
+                        ImageButtonPicker(idx: 4)
+                    }
+                    HStack {
+                        ImageButtonPicker(idx: 5)
+                        ImageButtonPicker(idx: 6)
+                        ImageButtonPicker(idx: 7)
+                    }
+                }
+                
+                Toggle("QuickPicker Enabled", isOn: self.$defaults.quickPickerEnabled)
+            }//.padding()
+        }.padding()
     }
 }
 
@@ -39,12 +68,24 @@ struct PreferencesView_Previews: PreviewProvider {
     }
 }
 
-func resize(image: NSImage, w: Int, h: Int) -> NSImage {
-    var destSize = NSMakeSize(CGFloat(w), CGFloat(h))
-    var newImage = NSImage(size: destSize)
-    newImage.lockFocus()
-    image.draw(in: NSMakeRect(0, 0, destSize.width, destSize.height), from: NSMakeRect(0, 0, image.size.width, image.size.height), operation: .sourceOver, fraction: CGFloat(1))
-    newImage.unlockFocus()
-    newImage.size = destSize
-    return NSImage(data: newImage.tiffRepresentation!)!
+extension NSImage {
+    func resized(to newSize: NSSize) -> NSImage? {
+        if let bitmapRep = NSBitmapImageRep(
+            bitmapDataPlanes: nil, pixelsWide: Int(newSize.width), pixelsHigh: Int(newSize.height),
+            bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
+            colorSpaceName: .calibratedRGB, bytesPerRow: 0, bitsPerPixel: 0
+        ) {
+            bitmapRep.size = newSize
+            NSGraphicsContext.saveGraphicsState()
+            NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmapRep)
+            draw(in: NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height), from: .zero, operation: .copy, fraction: 1.0)
+            NSGraphicsContext.restoreGraphicsState()
+
+            let resizedImage = NSImage(size: newSize)
+            resizedImage.addRepresentation(bitmapRep)
+            return resizedImage
+        }
+
+        return nil
+    }
 }

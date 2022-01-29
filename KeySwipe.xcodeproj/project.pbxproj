@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		930578BB27A3585F00138848 /* PreferencesView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930578BA27A3585F00138848 /* PreferencesView2.swift */; };
 		93260891279F7BC100BFCFC8 /* GestureWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260890279F7BC100BFCFC8 /* GestureWindow.swift */; };
 		93260893279F7CBA00BFCFC8 /* QuickPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260892279F7CBA00BFCFC8 /* QuickPicker.swift */; };
 		93260896279F7D9E00BFCFC8 /* KeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */; };
@@ -57,7 +56,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		930578BA27A3585F00138848 /* PreferencesView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView2.swift; sourceTree = "<group>"; };
 		93260890279F7BC100BFCFC8 /* GestureWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureWindow.swift; sourceTree = "<group>"; };
 		93260892279F7CBA00BFCFC8 /* QuickPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPicker.swift; sourceTree = "<group>"; };
 		93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListener.swift; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 				9326089F279F87D500BFCFC8 /* AppDelegate.swift */,
 				9335658527A34862000930DC /* EventMonitor.swift */,
 				93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */,
-				930578BA27A3585F00138848 /* PreferencesView2.swift */,
 				93E5C64E27A489A2005103BA /* PreferencesView.swift */,
 				93A2340127A5C224002542BF /* ImageButtonPicker.swift */,
 				93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */,
@@ -407,7 +404,6 @@
 				93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */,
 				93260896279F7D9E00BFCFC8 /* KeyboardListener.swift in Sources */,
 				932608A0279F87D500BFCFC8 /* AppDelegate.swift in Sources */,
-				930578BB27A3585F00138848 /* PreferencesView2.swift in Sources */,
 				9335658327A323FB000930DC /* WindowMover.swift in Sources */,
 				9335658627A34862000930DC /* EventMonitor.swift in Sources */,
 				93986BCA27A0636000A5D832 /* UserPreferences.swift in Sources */,
@@ -598,7 +594,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -629,7 +625,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
