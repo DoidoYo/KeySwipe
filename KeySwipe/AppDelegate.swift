@@ -39,7 +39,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     var statusItem:NSStatusItem!// = NSStatusBar.system.statusItem(withLength: 28)
     
     override init() {
-        
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     }
     
