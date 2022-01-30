@@ -38,6 +38,7 @@ struct PreferencesView: View {
             LaunchAtLogin.Toggle()
             HStack {
                 //picker view
+                Text("UPDATED")
                 VStack {
                     HStack {
                         ImageButtonPicker(idx: 0)
