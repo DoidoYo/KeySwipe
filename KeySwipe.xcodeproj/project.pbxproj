@@ -16,7 +16,6 @@
 		932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */ = {isa = PBXBuildFile; productRef = 932F5E5E27A35E0C00F780F3 /* Swindler */; };
 		9335658327A323FB000930DC /* WindowMover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658227A323FB000930DC /* WindowMover.swift */; };
 		9335658627A34862000930DC /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658527A34862000930DC /* EventMonitor.swift */; };
-		9337B11F27A60A7E00397409 /* AppkitTouchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9337B11E27A60A7E00397409 /* AppkitTouchesView.swift */; };
 		9337B12427A6665300397409 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9337B12327A6665300397409 /* Sparkle */; };
 		93986BC0279FA0DD00A5D832 /* FunctionalityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */; };
 		93986BC2279FA4A500A5D832 /* GestureWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC1279FA4A500A5D832 /* GestureWindowManager.swift */; };
@@ -67,7 +66,6 @@
 		9335658227A323FB000930DC /* WindowMover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowMover.swift; sourceTree = "<group>"; };
 		9335658527A34862000930DC /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
 		9335FD0127A228BF00C3DD6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		9337B11E27A60A7E00397409 /* AppkitTouchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppkitTouchesView.swift; sourceTree = "<group>"; };
 		93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionalityManager.swift; sourceTree = "<group>"; };
 		93986BC1279FA4A500A5D832 /* GestureWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureWindowManager.swift; sourceTree = "<group>"; };
 		93986BC3279FB6C400A5D832 /* CGVectorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGVectorExtension.swift; sourceTree = "<group>"; };
@@ -149,14 +147,6 @@
 			path = "Gesture Window";
 			sourceTree = "<group>";
 		};
-		9337B11D27A60A7100397409 /* Touch Experiment */ = {
-			isa = PBXGroup;
-			children = (
-				9337B11E27A60A7E00397409 /* AppkitTouchesView.swift */,
-			);
-			path = "Touch Experiment";
-			sourceTree = "<group>";
-		};
 		93D95914279F29B600A1357E = {
 			isa = PBXGroup;
 			children = (
@@ -183,7 +173,6 @@
 				9335FD0127A228BF00C3DD6F /* Info.plist */,
 				93D95920279F29B600A1357E /* KeySwipeApp.swift */,
 				9326089F279F87D500BFCFC8 /* AppDelegate.swift */,
-				9337B11D27A60A7100397409 /* Touch Experiment */,
 				9335658527A34862000930DC /* EventMonitor.swift */,
 				93986BBF279FA0DD00A5D832 /* FunctionalityManager.swift */,
 				93E5C64E27A489A2005103BA /* PreferencesView.swift */,
@@ -418,7 +407,6 @@
 				93986BC4279FB6C400A5D832 /* CGVectorExtension.swift in Sources */,
 				93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */,
 				93260896279F7D9E00BFCFC8 /* KeyboardListener.swift in Sources */,
-				9337B11F27A60A7E00397409 /* AppkitTouchesView.swift in Sources */,
 				932608A0279F87D500BFCFC8 /* AppDelegate.swift in Sources */,
 				9335658327A323FB000930DC /* WindowMover.swift in Sources */,
 				9335658627A34862000930DC /* EventMonitor.swift in Sources */,
@@ -596,7 +584,7 @@
 				CODE_SIGN_ENTITLEMENTS = KeySwipe/KeySwipe.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"KeySwipe/Preview Content\"";
 				DEVELOPMENT_TEAM = EZGAYLTBHH;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -627,7 +615,7 @@
 				CODE_SIGN_ENTITLEMENTS = KeySwipe/KeySwipe.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"KeySwipe/Preview Content\"";
 				DEVELOPMENT_TEAM = EZGAYLTBHH;
 				ENABLE_HARDENED_RUNTIME = YES;
