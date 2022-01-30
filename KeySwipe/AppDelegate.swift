@@ -10,6 +10,7 @@ import AppKit
 import SwiftUI
 import Cocoa
 import Swindler
+import Sparkle
 import Preferences
 
 @NSApplicationMain
@@ -20,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     var swindler: Swindler.State!
     var functionalityManager: FunctionalityManager? = nil
     
+    let updaterController: SPUStandardUpdaterController
     
     private lazy var preferencesWindowController = PreferencesWindowController(
         preferencePanes: [
@@ -35,6 +37,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     static var applications:Applications = Applications()
     
     var statusItem:NSStatusItem!// = NSStatusBar.system.statusItem(withLength: 28)
+    
+    override init() {
+        
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         //load apps
@@ -70,8 +77,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
             warnAlert.runModal()
             NSApplication.shared.terminate(self)
         }
-        
-        
     }
     
     func setupMenu() {
@@ -82,7 +87,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         //        menu.addItem(aboutMenuItem)
         
         //        let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: #selector(AppDelegate.checkForUpdates(_:)), keyEquivalent: "")
-        let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: nil, keyEquivalent: "")
+        let checkForUpdatesMenuItem = NSMenuItem(title: "Check for updates", action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)), keyEquivalent: "")
+        checkForUpdatesMenuItem.target = updaterController
         menu.addItem(checkForUpdatesMenuItem)
         
         menu.addItem(NSMenuItem.separator())
