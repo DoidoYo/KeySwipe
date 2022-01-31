@@ -6,6 +6,8 @@
 	<true/>
 	<key>SUFeedURL</key>
 	<string>https://raw.githubusercontent.com/DoidoYo/KeySwipe/main/cast.xml</string>
+	<key>SUShowReleaseNotes</key>
+	<false/>
 	<key>application</key>
 	<string></string>
 </dict>

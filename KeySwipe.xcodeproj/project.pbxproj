@@ -24,6 +24,7 @@
 		93986BC827A05AA800A5D832 /* SnappingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC727A05AA800A5D832 /* SnappingFunctions.swift */; };
 		93986BCA27A0636000A5D832 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93986BC927A0636000A5D832 /* UserPreferences.swift */; };
 		93A2340227A5C224002542BF /* ImageButtonPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A2340127A5C224002542BF /* ImageButtonPicker.swift */; };
+		93C1DCA527A78422006780A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93C1DCA427A78422006780A2 /* Main.storyboard */; };
 		93D95921279F29B600A1357E /* KeySwipeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D95920279F29B600A1357E /* KeySwipeApp.swift */; };
 		93D95925279F29B600A1357E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D95924279F29B600A1357E /* Assets.xcassets */; };
 		93D95928279F29B600A1357E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D95927279F29B600A1357E /* Preview Assets.xcassets */; };
@@ -32,7 +33,6 @@
 		93D9593F279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9593E279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift */; };
 		93D9594C279F29CD00A1357E /* QuickPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594B279F29CD00A1357E /* QuickPickerView.swift */; };
 		93D9594E279F29EA00A1357E /* AppSearcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9594D279F29EA00A1357E /* AppSearcher.swift */; };
-		93E5C64327A457A6005103BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93E5C64027A456E0005103BA /* Main.storyboard */; };
 		93E5C64527A45D3A005103BA /* PreferencesGeneralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */; };
 		93E5C64827A45E3C005103BA /* Preferences in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5C64727A45E3C005103BA /* Preferences */; };
 		93E5C64B27A4734C005103BA /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5C64A27A4734C005103BA /* LaunchAtLogin */; };
@@ -73,6 +73,7 @@
 		93986BC727A05AA800A5D832 /* SnappingFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnappingFunctions.swift; sourceTree = "<group>"; };
 		93986BC927A0636000A5D832 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		93A2340127A5C224002542BF /* ImageButtonPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageButtonPicker.swift; sourceTree = "<group>"; };
+		93C1DCA427A78422006780A2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		93D9591D279F29B600A1357E /* KeySwipe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeySwipe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93D95920279F29B600A1357E /* KeySwipeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySwipeApp.swift; sourceTree = "<group>"; };
 		93D95924279F29B600A1357E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -85,7 +86,6 @@
 		93D9593E279F29B700A1357E /* KeySwipeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySwipeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		93D9594B279F29CD00A1357E /* QuickPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickPickerView.swift; sourceTree = "<group>"; };
 		93D9594D279F29EA00A1357E /* AppSearcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSearcher.swift; sourceTree = "<group>"; };
-		93E5C64127A456E0005103BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ../../../../Downloads/JustClick/Ambar/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesGeneralView.swift; sourceTree = "<group>"; };
 		93E5C64E27A489A2005103BA /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -184,7 +184,7 @@
 				93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */,
 				93D9594D279F29EA00A1357E /* AppSearcher.swift */,
 				93986BC927A0636000A5D832 /* UserPreferences.swift */,
-				93E5C64027A456E0005103BA /* Main.storyboard */,
+				93C1DCA427A78422006780A2 /* Main.storyboard */,
 				93D95924279F29B600A1357E /* Assets.xcassets */,
 				93D95929279F29B600A1357E /* KeySwipe.entitlements */,
 				9326089A279F7F7E00BFCFC8 /* Utils */,
@@ -345,7 +345,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93E5C64327A457A6005103BA /* Main.storyboard in Resources */,
+				93C1DCA527A78422006780A2 /* Main.storyboard in Resources */,
 				93D95928279F29B600A1357E /* Preview Assets.xcassets in Resources */,
 				93D95925279F29B600A1357E /* Assets.xcassets in Resources */,
 			);
@@ -447,17 +447,6 @@
 			targetProxy = 93D95939279F29B700A1357E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		93E5C64027A456E0005103BA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				93E5C64127A456E0005103BA /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		93D95940279F29B700A1357E /* Debug */ = {
@@ -582,6 +571,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = KeySwipe/KeySwipe.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -601,6 +591,7 @@
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -613,11 +604,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = KeySwipe/KeySwipe.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"KeySwipe/Preview Content\"";
-				DEVELOPMENT_TEAM = EZGAYLTBHH;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -632,6 +624,7 @@
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
