@@ -8,6 +8,7 @@
 import Foundation
 import Cocoa
 import Swindler
+import AXSwift
 
 enum TrackpadState {
     case idle
@@ -57,6 +58,20 @@ class WindowMover {
     
     init(swindler: Swindler.State) {
         self.swindler = swindler
+        
+        
+        
+//        let i = NSEvent.accessibilityHitTest(NSPoint(x: 500, y: 500))
+//        print(i)
+        
+//        NSAccessibility.accessibilityHitTest(NSEvent.mouseLocation)
+        
+        //look for and 40 pixels from the top of the window
+        //AXToolbar, AXSplitGroup, AXGroup, AXScrollArea, AXWindow
+        
+        
+        
+        
     }
     
     func onTrackpadScrollGesture(delta: (vector: CGVector, timestamp: Double, direction: SwipeDirection)) {
@@ -105,7 +120,7 @@ class WindowMover {
                 modifierSelectionLocation = newloc
             }
         } else {
-             let newloc = get2x2SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
+            let newloc = get2x2SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
             if newloc != currentLocation {
                 WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: swindler.mainScreen!), animate: true)
             }
@@ -238,6 +253,7 @@ class WindowMover {
             //move window
             let snap = (currentLocation == .NONE) ? previousLocation : currentLocation
             let _ = AppDelegate.focusedWindow?.frame.set(getSnapLocationToScreen(location: snap, screen: swindler.mainScreen!))
+            //            AppDelegate.focusedWindow.
         }
         //hide overlay
         WindowMover.snapOverlayWindow.hideWindow(animated: true)
@@ -252,7 +268,7 @@ class WindowMover {
             self.currentLocation = .NONE
             self.modifierSelectionLocation = .NONE
         }
-            
+        
         self.modifierFlags = flags
     }
     
