@@ -13,6 +13,7 @@ import Swindler
 import Sparkle
 import Preferences
 import AXSwift
+import Signals
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NSMenuDelegate {
@@ -54,6 +55,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         
         Swindler.initialize().done { state in
             self.swindler = state
+            self.functionalityManager = FunctionalityManager(swindler: self.swindler)
+            self.functionalityManager?.test()
         }.catch { error in
             print("Fatal error: failed to initialize Swindler: \(error)")
             NSApp.terminate(self)
@@ -77,6 +80,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
             warnAlert.runModal()
             NSApplication.shared.terminate(self)
         }
+        
+        
     }
     
     func setupMenu() {
@@ -113,46 +118,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
     
-    func isTop(element: UIElement) -> Bool {
-        if let role = try? element.getMultipleAttributes(.role)[.role] as? String {
-            if role == "AXToolbar" || role == "AXTabGroup" || role == "AXStaticText" {
-                return true
-            }
-            if let parent = try? element.getMultipleAttributes(.parent)[.parent] as? UIElement {
-                return isTop(element: parent)
-            } else {
-                return false
-            }
-        } else {
-            return false
-        }
-    }
-    
     func onTrigger() { //pass down modifier keys on trigger
-        
-        var maxY = NSScreen.screens.map({$0.frame.height}).max()!
-        
-        let nPos = NSEvent.mouseLocation
-        let sPos = NSPoint(x: nPos.x, y: maxY - nPos.y)
-//        print(sPos)
-        var clickedElement:AXUIElement? = nil
-        if AXError.success == AXUIElementCopyElementAtPosition(AXUIElementCreateSystemWide(), Float(sPos.x), Float(sPos.y), &clickedElement) {
-            
-            let element = AXSwift.UIElement(clickedElement!)
-            print(isTop(element: element))
-            
-        } else {
-            print("Error getting UIelement from cursor position")
-        }
-        
-        
-        
-        
-//        print("")
         
         //trigger
         if self.swindler != nil {
-            AppDelegate.focusedWindow = swindler.frontmostApplication.value?.focusedWindow.value
+//            AppDelegate.focusedWindow = swindler.frontmostApplication.value?.focusedWindow.value
             
 //            functionalityManager = FunctionalityManager(swindler: self.swindler)
             //            NSApplication.shared.activate(ignoringOtherApps: true)

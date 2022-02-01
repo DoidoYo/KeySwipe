@@ -58,20 +58,23 @@ class WindowMover {
     
     init(swindler: Swindler.State) {
         self.swindler = swindler
+    }
+    
+    func attachListeners() {
+        let inputMan = InputNotfication.shared
         
-        
-        
-//        let i = NSEvent.accessibilityHitTest(NSPoint(x: 500, y: 500))
-//        print(i)
-        
-//        NSAccessibility.accessibilityHitTest(NSEvent.mouseLocation)
-        
-        //look for and 40 pixels from the top of the window
-        //AXToolbar, AXSplitGroup, AXGroup, AXScrollArea, AXWindow
-        
-        
-        
-        
+        inputMan.onTrackpadScrollGesture.subscribe(with: self) { delta in
+            self.onTrackpadScrollGesture(delta: delta)
+        }.onQueue(.main)
+        inputMan.onTrackpadScrollGestureBegan.subscribe(with: self) { _ in
+            self.onTrackpadScrollGestureBegan()
+        }.onQueue(.main)
+        inputMan.onTrackpadScrollGestureMayBegin.subscribe(with: self) { _ in
+            self.onTrackpadScrollGestureMayBegin()
+        }.onQueue(.main)
+        inputMan.onTrackpadScrollGestureEnded.subscribe(with: self) { _ in
+            self.onTrackpadScrollGestureEnded()
+        }.onQueue(.main)
     }
     
     func onTrackpadScrollGesture(delta: (vector: CGVector, timestamp: Double, direction: SwipeDirection)) {
