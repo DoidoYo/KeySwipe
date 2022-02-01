@@ -56,7 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         Swindler.initialize().done { state in
             self.swindler = state
             self.functionalityManager = FunctionalityManager(swindler: self.swindler)
-            self.functionalityManager?.test()
+            self.functionalityManager?.setupInputListeners()
         }.catch { error in
             print("Fatal error: failed to initialize Swindler: \(error)")
             NSApp.terminate(self)
@@ -130,7 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
     }
     func onModifiers(flags: [NSEvent.ModifierFlags]) {
         if functionalityManager != nil {
-            functionalityManager!.setModifierFlags(flags)
+//            functionalityManager!.setModifierFlags(flags)
         }
     }
     func onTriggerEnded() {
@@ -150,11 +150,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
             let accessibilityEnabled = AXIsProcessTrustedWithOptions(options)
             return accessibilityEnabled
         }
-    }
-    
-    func getAppfff(name:String,appData: [Application]) -> Application? {
-        let f = appData.filter{$0.name.lowercased().contains(name)}
-        return f[0]
     }
     
 }

@@ -7,10 +7,25 @@
 
 import Foundation
 import Swindler
+import AppKit
+import AXSwift
+import SwiftUI
 
-func moveWindowToScreen(allScreens: [Screen], window_ window: Window, direction: SwipeDirection) -> Bool {
+func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirection) -> Bool {
+//    let allScreens = NSScreen.screens.map({$0.frame})
     
-    let mult = CGRect(x: (window.frame.value.minX - (window.screen?.applicationFrame.minX)!)/(window.screen?.applicationFrame.width)!, y: (window.frame.value.minY - (window.screen?.applicationFrame.minY)!)/(window.screen?.applicationFrame.height)!, width: window.frame.value.width/(window.screen?.applicationFrame.width)!, height: window.frame.value.height/(window.screen?.applicationFrame.height)!)
+    let window:NSRect!
+    if let x = try? windowElement.getMultipleAttributes(.frame)[.frame] as? NSRect {
+        window = x.toCocoaCoord()
+    } else {
+        return false
+    }
+    
+    let screen = getAppScreen(window: getScreen(window: window)!.frame)
+    
+    let allScreens = NSScreen.screens.map({NSRect(origin: $0.frame.origin, size: CGSize(width: $0.frame.width, height: $0.frame.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)))})
+    
+    let mult = CGRect(x: (window.minX - (screen.minX))/(screen.width), y: (window.minY - (screen.minY))/(screen.height), width: window.width/(screen.width), height: window.height/(screen.height))
 
     switch direction {
     case .UP:
@@ -18,21 +33,23 @@ func moveWindowToScreen(allScreens: [Screen], window_ window: Window, direction:
     case .DOWN:
         break //TODO
     case .RIGHT:
-        if let i = allScreens.indices.filter({allScreens[$0].frame.minX > (window.screen?.frame.minX)!}).min() {
+        if let i = allScreens.indices.filter({allScreens[$0].minX > (window.minX)}).min() {
             let mScreen = allScreens[i]
-            let rect = CGRect(x: mScreen.applicationFrame.minX + (mult.minX * mScreen.applicationFrame.width), y: mScreen.applicationFrame.minY + (mult.minY * mScreen.applicationFrame.height), width: mult.width * mScreen.applicationFrame.width, height: mult.height * mScreen.applicationFrame.height)
-            let _ = window.frame.set(rect)
+            let rect = CGRect(x: mScreen.minX + (mult.minX * mScreen.width), y: mScreen.minY + (mult.minY * mScreen.height), width: mult.width * mScreen.width, height: mult.height * mScreen.height)
+
+            let _ = try? windowElement.setAttribute(.position, value: rect.toSystemCoord().origin)
+            let _ = try? windowElement.setAttribute(.size, value: rect.toSystemCoord().size)
             return true
-            
         }
         break
     case .LEFT:
-        if let i = allScreens.indices.filter({ allScreens[$0].frame.minX < (window.screen?.frame.minX)! }).max() {
+        if let i = allScreens.indices.filter({ allScreens[$0].maxX <= (window.minX)}).max() {
             let mScreen = allScreens[i]
-            let rect = CGRect(x: mScreen.applicationFrame.minX + (mult.minX * mScreen.applicationFrame.width), y: mScreen.applicationFrame.minY + (mult.minY * mScreen.applicationFrame.height), width: mult.width * mScreen.applicationFrame.width, height: mult.height * mScreen.applicationFrame.height)
-            let _ = window.frame.set(rect)
+            let rect = CGRect(x: mScreen.minX + (mult.minX * mScreen.width), y: mScreen.minY + (mult.minY * mScreen.height), width: mult.width * mScreen.width, height: mult.height * mScreen.height)
+
+            let _ = try? windowElement.setAttribute(.position, value: rect.toSystemCoord().origin)
+            let _ = try? windowElement.setAttribute(.size, value: rect.toSystemCoord().size)
             return true
-            
         }
         break
     case .DIAGONAL:
@@ -40,12 +57,47 @@ func moveWindowToScreen(allScreens: [Screen], window_ window: Window, direction:
     }
     return false
 }
+// take in System coordinates
+func getAppScreen(window:NSRect) ->NSRect {
+    let menuHeight = (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)
+    return NSRect(origin: NSPoint(x: window.minX, y: window.minY + menuHeight), size: CGSize(width: window.width, height: window.height - menuHeight))
+}
 
-func getSnapLocationToScreen(location: SnapLocation, screen: Screen) -> CGRect {
-    let frame = screen.applicationFrame
+func getScreen(window:NSRect) -> NSScreen? {
+    
+    let i = NSScreen.screens.map({ i -> Float in
+        let ii = i.frame.intersection(window)
+        return Float(ii.width * ii.height)
+    })
+    
+    return NSScreen.screens[i.firstIndex(of: i.max()!)!]
+}
+
+extension NSRect {
+    
+    func toCocoaCoord() -> NSRect {
+        let rect = self
+        print("test: \(rect)")
+        return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - (rect.minY + self.height)), size: rect.size)
+    }
+    func toSystemCoord() -> NSRect{
+        let rect = self
+        return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - (rect.minY + self.height)), size: rect.size)
+    }
+}
+func toCocoaCoord(rect: NSRect) -> NSRect {
+    return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - rect.minY), size: rect.size)
+}
+
+func toSystemCoord(rect: NSRect) -> NSRect{
+    return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - rect.minY), size: rect.size)
+}
+
+func getSnapLocationToScreen(location: SnapLocation, screen: NSRect) -> CGRect {
+    let frame = screen
     switch location {
     case .FULLSCREEEN:
-        return screen.applicationFrame
+        return screen
     case .LEFT_HALF:
         return CGRect(x: frame.minX, y: frame.minY, width: frame.width/2, height: frame.height)
     case .RIGHT_HALF:
