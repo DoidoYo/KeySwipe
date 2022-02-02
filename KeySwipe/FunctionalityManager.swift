@@ -7,85 +7,78 @@
 
 import Foundation
 import Cocoa
-import Swindler
+import Signals
+import AXSwift
 
-class FunctionalityManager: GestureWindowDelegate {
-    
-    private var gestureWindows:[GestureWindow]
-    
-    private var swindler: Swindler.State
-    private var windowMover:WindowMover?
+class FunctionalityManager {
+    static private var windowMover:WindowMover = WindowMover()
     private var quickPicker:QuickPicker?
-   
-    init(swindler: Swindler.State) {
-        self.swindler = swindler
+    
+    private let VECTOR_UP_RIGHT = CGVector(dx: 1, dy: 1).normalized()
+    private let VECTOR_UP_LEFT = CGVector(dx: -1, dy: 1).normalized()
+    private let VECTOR_DOWN_RIGHT = CGVector(dx: 1, dy: -1).normalized()
+    private let VECTOR_DOWN_LEFT = CGVector(dx: -1, dy: -1).normalized()
+    
+    let onData = Signal<(data:NSData, error:NSError)>()
+    let onProgress = Signal<Float>()
+    
+    
+    
+    init() {
+        self.quickPicker = QuickPicker()
+//        self.windowMover = WindowMover()
+    }
+    
+    
+    static var test = 1
+    
+    static var swipeObserver = Signal<NSEvent>()
+    static var stopScrolling = false
+    
+    func setupInputListeners() {
+        // Void pointer to `self`:
+        _ = UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
         
-        self.gestureWindows = [GestureWindow]()
-        
-        for (_, screen) in swindler.screens.enumerated() {
-            let gestureWindow = GestureWindowManager.shared.acquire()
-            gestureWindow.setDelegate(self)
-            gestureWindow.setFrameAndTA(rect: screen.frame)
-            gestureWindow.makeKeyAndOrderFront(gestureWindow)
-            self.gestureWindows.append(gestureWindow)
-        }
-        
-        if UserPreferences.shared.quickPickerEnabled {
-            self.quickPicker = QuickPicker()
-        }
-        
-        //check if selected window is close and can be moved
-        if let window = swindler.frontmostApplication.value?.focusedWindow.value {
-            if !(window.isMinimized.value || window.isFullscreen.value) {
-                self.windowMover = WindowMover(swindler: swindler)
+        let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: (1 << CGEventType.scrollWheel.rawValue), callback: { proxy, type, event, pointer in
+            
+            if FunctionalityManager.windowMover.scrollWheelEvent(event: NSEvent(cgEvent: event)!) {
+                FunctionalityManager.stopScrolling = true
             }
-        }
-    }
-    
-    func onTrackpadScrollGesture(delta: (vector: CGVector, timestamp: Double, direction: SwipeDirection)) {
-        self.windowMover?.onTrackpadScrollGesture(delta: delta)
-    }
-    
-    func trackpadTimedOut() {
-        self.windowMover?.trackpadTimedOut()
-    }
-    //if user start swiping (w/out resting finger on trackspad) this function may not be called
-    func onTrackpadScrollGestureMayBegin() {
-        self.windowMover?.onTrackpadScrollGestureMayBegin()
-    }
-    func onTrackpadScrollGestureBegan() {
-        self.windowMover?.onTrackpadScrollGestureBegan()
-    }
-    
-    func onTrackpadScrollGestureEnded() {
-        self.windowMover?.onTrackpadScrollGestureEnded()
-    }
-    
-    func onMouseMoveGesture(position: CGPoint) {
-        self.quickPicker?.onMouseMoveGesture(position: position)
-    }
-    
-    func onMagnifyGesture(factor: (width: CGFloat, height: CGFloat)) {
+            let nsevent = NSEvent(cgEvent: event)
+            //if scroll has stopped, only start it again if its a new scroll action
+            if FunctionalityManager.stopScrolling {
+                if nsevent?.phase == .began || nsevent?.phase == .mayBegin {
+                    FunctionalityManager.stopScrolling = false
+                    return Unmanaged.passRetained(event)
+                }
+                return nil
+            }
+            return Unmanaged.passRetained(event)
+        }, userInfo: nil)
         
-    }
-    
-    func setModifierFlags(_ flags:[NSEvent.ModifierFlags]) {
-        self.windowMover?.setModifierFlags(flags)
+        let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        CGEvent.tapEnable(tap: eventTap!, enable: true)
+        CFRunLoopRun()
+        
+//        NSEvent.addGlobalMonitorForEvents(matching: .scrollWheel) { event in
+//            FunctionalityManager.windowMover.scrollWheelEvent(event: event)
+//        }
+        
+        NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { event in
+            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            FunctionalityManager.windowMover.setModifierFlags(flags)
+            self.quickPicker?.setModifierFlags(flags)
+        }
+        
     }
     
     func stop() {
         self.quickPicker?.stop()
-        self.windowMover?.stop()
-        
-        self.gestureWindows.forEach { (item) in
-            item.orderOut(item)
-            item.clear()
-        }
+        FunctionalityManager.windowMover.stop()
     }
     
     deinit {
-        self.gestureWindows.forEach { (item) in
-            GestureWindowManager.shared.release(item)
-        }
+        
     }
 }

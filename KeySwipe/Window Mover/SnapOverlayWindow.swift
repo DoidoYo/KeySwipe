@@ -16,7 +16,7 @@ class SnapOverlayWindow:NSWindow {
         self.init(contentRect: contentRect, styleMask: [NSWindow.StyleMask.borderless], backing: NSWindow.BackingStoreType.buffered, defer: true)
         
         self.level = .popUpMenu
-        self.hasShadow = false
+        self.hasShadow = true
         self.isOpaque = false
         self.ignoresMouseEvents = true
         self.acceptsMouseMovedEvents = false

@@ -13,7 +13,8 @@
 		9326089D279F7F8A00BFCFC8 /* PTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089B279F7F8A00BFCFC8 /* PTimer.swift */; };
 		9326089E279F7F8A00BFCFC8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089C279F7F8A00BFCFC8 /* Logger.swift */; };
 		932608A0279F87D500BFCFC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326089F279F87D500BFCFC8 /* AppDelegate.swift */; };
-		932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */ = {isa = PBXBuildFile; productRef = 932F5E5E27A35E0C00F780F3 /* Swindler */; };
+		933204FE27AA3C2E004BF500 /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 933204FD27AA3C2E004BF500 /* AXSwift */; };
+		9333E00527A96FA2006B2648 /* Signals in Frameworks */ = {isa = PBXBuildFile; productRef = 9333E00427A96FA2006B2648 /* Signals */; };
 		9335658327A323FB000930DC /* WindowMover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658227A323FB000930DC /* WindowMover.swift */; };
 		9335658627A34862000930DC /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9335658527A34862000930DC /* EventMonitor.swift */; };
 		9337B12427A6665300397409 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9337B12327A6665300397409 /* Sparkle */; };
@@ -96,9 +97,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				93E5C64B27A4734C005103BA /* LaunchAtLogin in Frameworks */,
+				9333E00527A96FA2006B2648 /* Signals in Frameworks */,
 				9337B12427A6665300397409 /* Sparkle in Frameworks */,
-				932F5E5F27A35E0C00F780F3 /* Swindler in Frameworks */,
 				93E5C64827A45E3C005103BA /* Preferences in Frameworks */,
+				933204FE27AA3C2E004BF500 /* AXSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +138,15 @@
 				9326089B279F7F8A00BFCFC8 /* PTimer.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		933204FF27AA3C61004BF500 /* No longer needed */ = {
+			isa = PBXGroup;
+			children = (
+				93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */,
+				9335658427A3286C000930DC /* Gesture Window */,
+			);
+			path = "No longer needed";
 			sourceTree = "<group>";
 		};
 		9335658427A3286C000930DC /* Gesture Window */ = {
@@ -178,10 +189,9 @@
 				93E5C64E27A489A2005103BA /* PreferencesView.swift */,
 				93A2340127A5C224002542BF /* ImageButtonPicker.swift */,
 				93E5C64427A45D3A005103BA /* PreferencesGeneralView.swift */,
+				933204FF27AA3C61004BF500 /* No longer needed */,
 				93F8C34427A1E13000C1A3F4 /* Window Mover */,
 				93260894279F7CD800BFCFC8 /* Quick Picker */,
-				9335658427A3286C000930DC /* Gesture Window */,
-				93260895279F7D9E00BFCFC8 /* KeyboardListener.swift */,
 				93D9594D279F29EA00A1357E /* AppSearcher.swift */,
 				93986BC927A0636000A5D832 /* UserPreferences.swift */,
 				93C1DCA427A78422006780A2 /* Main.storyboard */,
@@ -246,10 +256,11 @@
 			);
 			name = KeySwipe;
 			packageProductDependencies = (
-				932F5E5E27A35E0C00F780F3 /* Swindler */,
 				93E5C64727A45E3C005103BA /* Preferences */,
 				93E5C64A27A4734C005103BA /* LaunchAtLogin */,
 				9337B12327A6665300397409 /* Sparkle */,
+				9333E00427A96FA2006B2648 /* Signals */,
+				933204FD27AA3C2E004BF500 /* AXSwift */,
 			);
 			productName = KeySwipe;
 			productReference = 93D9591D279F29B600A1357E /* KeySwipe.app */;
@@ -324,10 +335,11 @@
 			);
 			mainGroup = 93D95914279F29B600A1357E;
 			packageReferences = (
-				932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */,
 				93E5C64627A45E3C005103BA /* XCRemoteSwiftPackageReference "Preferences" */,
 				93E5C64927A4734C005103BA /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				9337B12227A6665300397409 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				9333E00327A96FA2006B2648 /* XCRemoteSwiftPackageReference "Signals" */,
+				933204FC27AA3C2E004BF500 /* XCRemoteSwiftPackageReference "AXSwift" */,
 			);
 			productRefGroup = 93D9591E279F29B600A1357E /* Products */;
 			projectDirPath = "";
@@ -588,7 +600,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -621,7 +633,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = doidoyo.KeySwipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -744,12 +756,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */ = {
+		933204FC27AA3C2E004BF500 /* XCRemoteSwiftPackageReference "AXSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tmandry/Swindler";
+			repositoryURL = "https://github.com/tmandry/AXSwift";
 			requirement = {
 				branch = main;
 				kind = branch;
+			};
+		};
+		9333E00327A96FA2006B2648 /* XCRemoteSwiftPackageReference "Signals" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/artman/Signals";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
 			};
 		};
 		9337B12227A6665300397409 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
@@ -779,10 +799,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		932F5E5E27A35E0C00F780F3 /* Swindler */ = {
+		933204FD27AA3C2E004BF500 /* AXSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 932F5E5D27A35E0C00F780F3 /* XCRemoteSwiftPackageReference "Swindler" */;
-			productName = Swindler;
+			package = 933204FC27AA3C2E004BF500 /* XCRemoteSwiftPackageReference "AXSwift" */;
+			productName = AXSwift;
+		};
+		9333E00427A96FA2006B2648 /* Signals */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9333E00327A96FA2006B2648 /* XCRemoteSwiftPackageReference "Signals" */;
+			productName = Signals;
 		};
 		9337B12327A6665300397409 /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

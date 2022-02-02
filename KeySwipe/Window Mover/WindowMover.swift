@@ -7,7 +7,7 @@
 
 import Foundation
 import Cocoa
-import Swindler
+import AXSwift
 
 enum TrackpadState {
     case idle
@@ -38,8 +38,6 @@ enum SnapLocation {
 }
 
 class WindowMover {
-    private var swindler: Swindler.State
-    
     private let haptic = NSHapticFeedbackManager.defaultPerformer
     
     private var previousLocation:SnapLocation = .NONE
@@ -47,16 +45,165 @@ class WindowMover {
     private var modifierSelectionLocation:SnapLocation = .NONE
     private var trackpadState = TrackpadState.idle
     
-    private var modifierFlags = [NSEvent.ModifierFlags]()
+    private var modifierFlags = NSEvent.ModifierFlags()
+    private static let activatingModifier:NSEvent.ModifierFlags = .function
+    private static let smallGridModifier:NSEvent.ModifierFlags = .shift
     private var modifierTimeTimeoutTask: DispatchWorkItem?
     private var modifierTime = 0.2
     private var abortTimeTimeoutTask: DispatchWorkItem?
     private var abortTime = 1.0
     
+    private var lastLoc = NSEvent.mouseLocation
+    private var overTop = false
+    private var update = false
+    
+    private let VECTOR_UP_RIGHT = CGVector(dx: 1, dy: 1).normalized()
+    private let VECTOR_UP_LEFT = CGVector(dx: -1, dy: 1).normalized()
+    private let VECTOR_DOWN_RIGHT = CGVector(dx: 1, dy: -1).normalized()
+    private let VECTOR_DOWN_LEFT = CGVector(dx: -1, dy: -1).normalized()
+    
+    private var hitWindow:UIElement?
+    private var windowToMove:UIElement?
+    private var windowToMoveFrame:NSRect?
+    private var windowToMoveScreen:NSRect?
+    
     private static var snapOverlayWindow:SnapOverlayWindow = SnapOverlayWindow(contentRect: NSRect(x: 0, y: 0, width: 0, height: 0))
     
-    init(swindler: Swindler.State) {
-        self.swindler = swindler
+    func scrollWheelEvent(event:NSEvent) -> Bool {
+        //dont respond to momentum scrolling
+        if event.momentumPhase != NSEvent.Phase(rawValue: 0) { return false }
+        
+        //update hit if mouse position changed or update flag is set
+        if lastLoc != NSEvent.mouseLocation || update {
+            let maxY = NSScreen.screens.map({$0.frame.height}).max()!
+            
+            let nPos = NSEvent.mouseLocation
+            lastLoc = nPos
+            let sPos = NSPoint(x: nPos.x, y: maxY - nPos.y)
+            
+            var clickedElement:AXUIElement? = nil
+            if AXError.success == AXUIElementCopyElementAtPosition(AXUIElementCreateSystemWide(), Float(sPos.x), Float(sPos.y), &clickedElement) {
+                
+                let element = AXSwift.UIElement(clickedElement!)
+                overTop = isTop(element: element)
+                
+                //check if mouse 24px from top of window
+                let parentUI = getParentWindow(element: element)
+                if overTop == false {
+                    if let r = try? parentUI?.getMultipleAttributes(.frame)[.frame] as? CGRect {
+                        let boundBox = NSRect(x: r.minX, y: r.minY, width: r.width, height: 26).toCocoaCoord()
+                        let pointBox = NSRect(x: NSEvent.mouseLocation.x, y: NSEvent.mouseLocation.y, width: 0, height: 0)
+                        overTop = boundBox.contains(pointBox)
+                    }
+                }
+                //get associated window //returns focused window if modifier is pressed, else it uses window that the cursor is over its titlebar
+                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentUI : nil)
+                
+                if self.windowToMove != nil {
+                    self.windowToMoveFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
+                    self.windowToMoveScreen = getAppScreenFromSystem(self.windowToMoveFrame!)
+                }
+                update = false
+            } else {
+                print("Error getting UIelement from cursor position")
+                overTop = false
+                update = true //could not find UIelement
+            }
+        }
+        
+        //ignore if modifier key is NOT pressed and mouse NOT over topbar
+        //        if overTop == false && modifierFlags.contains(WindowMover.activatingModifier) == false { return }
+        //state can only change if window is selected
+        if self.windowToMove == nil { return false }
+        
+        // Check if scroll is triggered from mouse wheel
+        // https://stackoverflow.com/a/13981577
+        if event.phase == NSEvent.Phase.init(rawValue: 0) &&
+            event.momentumPhase == NSEvent.Phase.init(rawValue: 0) {
+            return false
+        }
+        //trackpad gesture
+        if event.phase == NSEvent.Phase.mayBegin { //two fingers down, but not moving
+            self.onTrackpadScrollGestureMayBegin()
+        }else if event.phase == NSEvent.Phase.began { //two fingers started moving
+            self.onTrackpadScrollGestureBegan()
+            
+        } else if event.phase == NSEvent.Phase.changed {
+            // Moving or resizing (delta) window
+            //let factor: CGFloat = event.isDirectionInvertedFromDevice ? -1 : 1;
+            let vector = CGVector(dx: event.scrollingDeltaX, dy: -event.scrollingDeltaY)
+            
+            var direction = SwipeDirection.DIAGONAL
+            if (VECTOR_UP_RIGHT.crossprod(vector)>0 && vector.crossprod(VECTOR_UP_LEFT)>0) {
+                direction = SwipeDirection.UP
+            } else if (VECTOR_DOWN_LEFT.crossprod(vector)>0 && vector.crossprod(VECTOR_DOWN_RIGHT)>0) {
+                direction = SwipeDirection.DOWN
+            } else if (VECTOR_UP_LEFT.crossprod(vector)>0 && vector.crossprod(VECTOR_DOWN_LEFT)>0) {
+                direction = SwipeDirection.LEFT
+            } else if (VECTOR_DOWN_RIGHT.crossprod(vector)>0 && vector.crossprod(VECTOR_UP_RIGHT)>0) {
+                direction = SwipeDirection.RIGHT
+            }
+            
+            let delta = (
+                vector:CGVector(dx: event.scrollingDeltaX, dy: -event.scrollingDeltaY),
+                timestamp: event.timestamp,
+                direction: direction
+            )
+            
+            self.onTrackpadScrollGesture(delta: delta)
+        } else if (event.phase == NSEvent.Phase.ended || event.phase == NSEvent.Phase.cancelled) {
+            // Call the delegate method
+            self.onTrackpadScrollGestureEnded()
+        }
+        return true
+    }
+    
+    func getMainWindow() -> UIElement? {
+        if let application = NSWorkspace.shared.frontmostApplication {
+            let uiApp = AXSwift.Application(application)!
+            if let appFocus = try? uiApp.windows()?.first{
+                if isMinimized(element: appFocus) == true { return nil }
+                
+                if let main = try? appFocus.getMultipleAttributes(.main)[.main] as? Bool {
+                    if main == false { return nil }
+                }
+            }
+            return try? uiApp.windows()?.first
+        }
+        return nil
+    }
+    
+    func getParentWindow(element:UIElement) -> UIElement? {
+        if let parent = try? element.getMultipleAttributes(.topLevelUIElement)[.topLevelUIElement] as? UIElement {
+            if (try? parent.getMultipleAttributes(.labelValue)[.labelValue] as? String) != nil {
+                //                print(label)
+            }
+            return parent
+        }
+        return nil
+    }
+    
+    func isMinimized(element: UIElement) -> Bool? {
+        if let minimized = try? element.getMultipleAttributes(.minimized)[.minimized] as? Bool {
+            if minimized { return true } else {return false}
+        } else {
+            return nil
+        }
+    }
+    
+    func isTop(element: UIElement) -> Bool {
+        if let role = try? element.getMultipleAttributes(.role)[.role] as? String {
+            if role == "AXToolbar" || role == "AXTabGroup" {
+                return true
+            }
+            if let parent = try? element.getMultipleAttributes(.parent)[.parent] as? UIElement {
+                return isTop(element: parent)
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
     }
     
     func onTrackpadScrollGesture(delta: (vector: CGVector, timestamp: Double, direction: SwipeDirection)) {
@@ -65,7 +212,7 @@ class WindowMover {
         
         //minimize window on swipe down
         if currentLocation == .NONE && delta.direction == .DOWN {
-            let _ = AppDelegate.focusedWindow?.isMinimized.set(true)
+            try? self.windowToMove?.setAttribute(.minimized, value: true)
             self.trackpadTimedOut(haptic: false)
             return
         }
@@ -73,9 +220,10 @@ class WindowMover {
         //user held first, then moved
         if trackpadState == .modifier && previousLocation == .NONE {
             //move it with same ratio
-            let window = AppDelegate.focusedWindow
-            if moveWindowToScreen(allScreens: swindler.screens, window_: window!, direction: delta.direction) {
-                self.trackpadState = .aborted
+            if self.windowToMove != nil {
+                if moveWindowToScreen(window: self.windowToMove!, direction: delta.direction) {
+                    self.trackpadState = .aborted
+                }
             }
             return
         }
@@ -94,20 +242,22 @@ class WindowMover {
             previousLocation = currentLocation
         }
         //get new snap location if swipe direction is valid
-        if modifierFlags.contains(.command) {
+        if modifierFlags.contains(WindowMover.smallGridModifier) {
             if currentLocation == .NONE {
                 currentLocation = get3x3SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
             } else {
                 let newloc = get3x3SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
                 if newloc != modifierSelectionLocation {
-                    WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: swindler.mainScreen!), animate: true)
+                    
+                    WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: self.windowToMoveScreen!.toCocoaCoord()), animate: true)
                 }
                 modifierSelectionLocation = newloc
             }
         } else {
-             let newloc = get2x2SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
+            let newloc = get2x2SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
             if newloc != currentLocation {
-                WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: swindler.mainScreen!), animate: true)
+                //                print("Moving in screen: \(self.windowToMoveScreen!.toCocoaCoord())")
+                WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: self.windowToMoveScreen!.toCocoaCoord()), animate: true)
             }
             currentLocation = newloc
         }
@@ -115,7 +265,7 @@ class WindowMover {
         //modifier timer and timeout timer
         self.modifierTimeTimeoutTask?.cancel()
         self.modifierTimeTimeoutTask = DispatchWorkItem {
-            if self.modifierFlags.contains(.command) {
+            if self.modifierFlags.contains(WindowMover.smallGridModifier) {
                 self.currentLocation = self.modifierSelectionLocation
             } else {
                 self.trackpadState = .modifier
@@ -148,31 +298,28 @@ class WindowMover {
     //if user start swiping (w/out resting finger on trackspad) this function may not be called
     func onTrackpadScrollGestureMayBegin() {
         //prevent movement if window is minimized
-        if swindler.frontmostApplication.value?.focusedWindow.value == nil {
+        if self.windowToMove == nil {
             self.trackpadTimedOut(haptic: false)
             return
         }
         
         self.trackpadState = .may_move
         
-        let appFrame = AppDelegate.focusedWindow?.frame.value
-        WindowMover.snapOverlayWindow.setFrameCustom(rect: appFrame!, animate: false)
+        let appFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
+        WindowMover.snapOverlayWindow.setFrameCustom(rect: appFrame!.toCocoaCoord(), animate: false)
         WindowMover.snapOverlayWindow.alphaValue = 0
-        WindowMover.snapOverlayWindow.makeKey()
-        if let bw = GestureWindowManager.shared.getBackmostGestureWindow() {
-            WindowMover.snapOverlayWindow.order(.below, relativeTo: bw.windowNumber)
-        }
+        WindowMover.snapOverlayWindow.makeKeyAndOrderFront(WindowMover.snapOverlayWindow)
         
         // trackpad modifier timer for when user starts by resting two fingers on trackpad
         // normal function moves window between screens
         // keyboard modified function moves window in thirds
         self.modifierTimeTimeoutTask?.cancel()
         self.modifierTimeTimeoutTask = DispatchWorkItem {
-            if self.modifierFlags.contains(.command) {
+            if self.modifierFlags.contains(WindowMover.smallGridModifier) {
                 self.currentLocation = .THIRD_MIDDLE
                 self.modifierSelectionLocation = .THIRD_MIDDLE
                 WindowMover.snapOverlayWindow.alphaValue = 1
-                WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: self.currentLocation, screen: self.swindler.mainScreen!), animate: true)
+                WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: self.currentLocation, screen: self.windowToMoveScreen!.toCocoaCoord()), animate: true)
             } else {
                 self.trackpadState = .modifier
                 self.currentLocation = .NONE
@@ -190,7 +337,7 @@ class WindowMover {
     //aways called on any swipe or two finger move
     func onTrackpadScrollGestureBegan() {
         //prevent movement if window is minimized
-        if swindler.frontmostApplication.value?.focusedWindow.value == nil {
+        if self.windowToMove == nil {
             self.trackpadTimedOut(haptic: false)
             return
         }
@@ -198,13 +345,10 @@ class WindowMover {
         switch self.trackpadState {
         case .idle:
             //if overlay has not been shown yet, show it
-            let appFrame = AppDelegate.focusedWindow?.frame
-            WindowMover.snapOverlayWindow.setFrameCustom(rect: appFrame!.value, animate: false)
+            let appFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
+            WindowMover.snapOverlayWindow.setFrameCustom(rect: appFrame!.toCocoaCoord(), animate: false)
             WindowMover.snapOverlayWindow.alphaValue = 0
-            WindowMover.snapOverlayWindow.makeKey()
-            if let bw = GestureWindowManager.shared.getBackmostGestureWindow() {
-                WindowMover.snapOverlayWindow.order(.below, relativeTo: bw.windowNumber)
-            }
+            WindowMover.snapOverlayWindow.makeKeyAndOrderFront(WindowMover.snapOverlayWindow)
             break
         case .may_move:
             //overlay already showed
@@ -213,7 +357,7 @@ class WindowMover {
             break
         }
         
-        if self.modifierFlags.contains(.command) {
+        if self.modifierFlags.contains(WindowMover.smallGridModifier) {
             WindowMover.snapOverlayWindow.alphaValue = 1
         }
         
@@ -234,11 +378,15 @@ class WindowMover {
             currentLocation = modifierSelectionLocation
             previousLocation = modifierSelectionLocation
         }
-        if previousLocation != .NONE && currentLocation != .NONE {
+        if previousLocation != .NONE && currentLocation != .NONE && self.windowToMove != nil {
             //move window
             let snap = (currentLocation == .NONE) ? previousLocation : currentLocation
-            let _ = AppDelegate.focusedWindow?.frame.set(getSnapLocationToScreen(location: snap, screen: swindler.mainScreen!))
+            let setRect = getSnapLocationToScreen(location: snap, screen: self.windowToMoveScreen!.toCocoaCoord())
+            let _ = try? self.windowToMove!.setAttribute(.position, value: setRect.toSystemCoord().origin)
+            let _ = try? self.windowToMove!.setAttribute(.size, value: setRect.toSystemCoord().size)
+            //update hit since user may have changed window focus without moving mouse
         }
+        self.update = true
         //hide overlay
         WindowMover.snapOverlayWindow.hideWindow(animated: true)
         previousLocation = .NONE
@@ -246,13 +394,14 @@ class WindowMover {
         modifierSelectionLocation = .NONE
     }
     
-    func setModifierFlags(_ flags:[NSEvent.ModifierFlags]) {
+    func setModifierFlags(_ flags:NSEvent.ModifierFlags) {
         // only set to none if changed
-        if !(self.modifierFlags.contains(.command) == flags.contains(.command)) {
+        if !(self.modifierFlags.contains(WindowMover.smallGridModifier) && flags.contains(WindowMover.smallGridModifier)) {
             self.currentLocation = .NONE
             self.modifierSelectionLocation = .NONE
+            update = true
         }
-            
+        
         self.modifierFlags = flags
     }
     

@@ -18,14 +18,13 @@ enum PickerStatus {
 class QuickPicker {
     
     static private var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
-    
-//    private var applications:Applications //passes apps to show on QuickPickerView
     private static var window:NSWindow!
     
+    private var modifierFlags = NSEvent.ModifierFlags()
+    private static let activatingModifier:NSEvent.ModifierFlags = .control
+    
     private var pickerStatus:PickerStatus = .hidden
-    
     private var previousSelection = -1
-    
     private var initialMousePosition:CGVector
     
     init() {
@@ -38,9 +37,6 @@ class QuickPicker {
             QuickPicker.window.ignoresMouseEvents = true
             QuickPicker.window.acceptsMouseMovedEvents = false
             
-//            QuickPicker.window.contentView!.allowedTouchTypes = [.indirect]
-//            QuickPicker.window.contentView!.wantsRestingTouches = true
-            
             QuickPicker.window.backgroundColor = .clear
             QuickPicker.window.isMovable=false
             QuickPicker.window.title = "Quick Picker Window"
@@ -51,12 +47,44 @@ class QuickPicker {
             let contentView = QuickPickerView().environmentObject(UserPreferences.shared.applications).edgesIgnoringSafeArea(.top)
             QuickPicker.window.contentView = NSHostingView(rootView: contentView)
             
-           
+            
         }
         //initial mouse location
         self.initialMousePosition = CGVector(point: NSEvent.mouseLocation)
         
         //get applications from preference
+    }
+    
+    //global listener to mouse
+    var mouseListener:Any?
+    func setModifierFlags(_ flags:NSEvent.ModifierFlags) {
+        //exit if disabled
+        if !UserPreferences.shared.quickPickerEnabled {
+            if self.mouseListener != nil {
+                NSEvent.removeMonitor(mouseListener as Any)
+                mouseListener = nil
+            }
+            return
+        }
+        
+        // only set to none if changed
+        //if it was turned on
+        if flags.contains(QuickPicker.activatingModifier) && !self.modifierFlags.contains(QuickPicker.activatingModifier){
+            self.initialMousePosition = CGVector(point: NSEvent.mouseLocation)
+            
+            if self.mouseListener == nil {
+                self.mouseListener = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { event in
+                    self.onMouseMoveGesture(position: NSEvent.mouseLocation)
+                }
+            }
+            
+        } else if !flags.contains(QuickPicker.activatingModifier) && self.modifierFlags.contains(QuickPicker.activatingModifier) {
+            NSEvent.removeMonitor(mouseListener)
+            mouseListener = nil
+            //turned off
+            stop() //reset items
+        }
+        self.modifierFlags = flags
     }
     
     func onMouseMoveGesture(position: CGPoint) {
@@ -66,11 +94,9 @@ class QuickPicker {
         
         switch pickerStatus {
         case .hidden:
-            if let bw = GestureWindowManager.shared.getBackmostGestureWindow() {
-                QuickPicker.window.setFrame(CGRect(x: self.initialMousePosition.dx - (QuickPicker.window.frame.width/2), y: self.initialMousePosition.dy - (QuickPicker.window.frame.height/2), width: QuickPicker.window.frame.width, height: QuickPicker.window.frame.height), display: true, animate: false)
-                QuickPicker.window.order(.below, relativeTo: bw.windowNumber)
-                pickerStatus = .shown
-            }
+            QuickPicker.window.setFrame(CGRect(x: self.initialMousePosition.dx - (QuickPicker.window.frame.width/2), y: self.initialMousePosition.dy - (QuickPicker.window.frame.height/2), width: QuickPicker.window.frame.width, height: QuickPicker.window.frame.height), display: true, animate: false)
+            QuickPicker.window.makeKeyAndOrderFront(self)
+            pickerStatus = .shown
         case .shown:
             break
         }

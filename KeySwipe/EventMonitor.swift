@@ -1,4 +1,5 @@
 import Cocoa
+import AXSwift
 
 class EventMonitor {
     private var monitor: Any?
@@ -8,6 +9,7 @@ class EventMonitor {
     public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> Void) {
       self.mask = mask
       self.handler = handler
+        
     }
 
     deinit {
