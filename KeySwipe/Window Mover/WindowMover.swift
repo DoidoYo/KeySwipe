@@ -72,7 +72,7 @@ class WindowMover {
     func scrollWheelEvent(event:NSEvent) {
         //dont respond to momentum scrolling
         if event.momentumPhase != NSEvent.Phase(rawValue: 0) { return }
-
+        
         //update hit if mouse position changed or update flag is set
         if lastLoc != NSEvent.mouseLocation || update {
             let maxY = NSScreen.screens.map({$0.frame.height}).max()!
@@ -86,15 +86,24 @@ class WindowMover {
                 
                 let element = AXSwift.UIElement(clickedElement!)
                 overTop = isTop(element: element)
+                
+                //check if mouse 24px from top of window
+                let parentUI = getParentWindow(element: element)
+                if overTop == false {
+                    if let r = try? parentUI?.getMultipleAttributes(.frame)[.frame] as? CGRect {
+                        let boundBox = NSRect(x: r.minX, y: r.minY, width: r.width, height: 26).toCocoaCoord()
+                        let pointBox = NSRect(x: NSEvent.mouseLocation.x, y: NSEvent.mouseLocation.y, width: 0, height: 0)
+                        overTop = boundBox.contains(pointBox)
+                    }
+                }
+                
                 //get associated window //returns focused window if modifier is pressed, else it uses window that the cursor is over its titlebar
-
-                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? getParentWindow(element: element) : nil)
+                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentUI : nil)
                 
                 if self.windowToMove != nil {
                     self.windowToMoveFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
-                    self.windowToMoveScreen = getAppScreen(window: getScreen(window: self.windowToMoveFrame!)!.frame)
+                    self.windowToMoveScreen = getAppScreenFromSystem(self.windowToMoveFrame!)
                 }
-
                 update = false
             } else {
                 print("Error getting UIelement from cursor position")
@@ -104,10 +113,10 @@ class WindowMover {
         }
         
         //ignore if modifier key is NOT pressed and mouse NOT over topbar
-//        if overTop == false && modifierFlags.contains(WindowMover.activatingModifier) == false { return }
+        //        if overTop == false && modifierFlags.contains(WindowMover.activatingModifier) == false { return }
         //state can only change if window is selected
         if self.windowToMove == nil { return }
-
+        
         // Check if scroll is triggered from mouse wheel
         // https://stackoverflow.com/a/13981577
         if event.phase == NSEvent.Phase.init(rawValue: 0) &&
@@ -167,7 +176,7 @@ class WindowMover {
     func getParentWindow(element:UIElement) -> UIElement? {
         if let parent = try? element.getMultipleAttributes(.topLevelUIElement)[.topLevelUIElement] as? UIElement {
             if let label = try? parent.getMultipleAttributes(.labelValue)[.labelValue] as? String {
-//                print(label)
+                //                print(label)
             }
             return parent
         }
@@ -239,7 +248,7 @@ class WindowMover {
             } else {
                 let newloc = get3x3SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
                 if newloc != modifierSelectionLocation {
-            
+                    
                     WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: self.windowToMoveScreen!.toCocoaCoord()), animate: true)
                 }
                 modifierSelectionLocation = newloc
@@ -247,7 +256,7 @@ class WindowMover {
         } else {
             let newloc = get2x2SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
             if newloc != currentLocation {
-//                print("Moving in screen: \(self.windowToMoveScreen!.toCocoaCoord())")
+                //                print("Moving in screen: \(self.windowToMoveScreen!.toCocoaCoord())")
                 WindowMover.snapOverlayWindow.setFrameCustom(rect: getSnapLocationToScreen(location: newloc, screen: self.windowToMoveScreen!.toCocoaCoord()), animate: true)
             }
             currentLocation = newloc
@@ -376,8 +385,8 @@ class WindowMover {
             let _ = try? self.windowToMove!.setAttribute(.position, value: setRect.toSystemCoord().origin)
             let _ = try? self.windowToMove!.setAttribute(.size, value: setRect.toSystemCoord().size)
             //update hit since user may have changed window focus without moving mouse
-            self.update = true
         }
+        self.update = true
         //hide overlay
         WindowMover.snapOverlayWindow.hideWindow(animated: true)
         previousLocation = .NONE

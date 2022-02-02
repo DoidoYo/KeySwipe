@@ -9,18 +9,14 @@ import Foundation
 import AppKit
 import SwiftUI
 import Cocoa
-import Swindler
 import Sparkle
 import Preferences
 import AXSwift
 import Signals
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NSMenuDelegate {
-    
-    var keyboardListener:KeyboardListener!
-    
-    var swindler: Swindler.State!
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+
     var functionalityManager: FunctionalityManager? = nil
     
     let updaterController: SPUStandardUpdaterController
@@ -33,8 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         animated: true,
         hidesToolbarForSingleItem: false
     )
-    
-    static var focusedWindow: Window? = nil
+
     static var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})
     static var applications:Applications = Applications()
     
@@ -53,20 +48,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
             button.image?.isTemplate = true
         }
         
-        Swindler.initialize().done { state in
-            self.swindler = state
-            self.functionalityManager = FunctionalityManager(swindler: self.swindler)
-            self.functionalityManager?.setupInputListeners()
-        }.catch { error in
-            print("Fatal error: failed to initialize Swindler: \(error)")
-            NSApp.terminate(self)
-        }
+            
         
         if checkAccessibilityPermissions() {
             setupMenu()
+            self.functionalityManager = FunctionalityManager()
+            self.functionalityManager?.setupInputListeners()
             //            Preferences.shared.setDelegate(self)
-            self.keyboardListener = KeyboardListener()
-            self.keyboardListener.setDelegate(self)
             
             //            self.setupAboutWindow()
             //            self.onPreferencesChanged()
@@ -117,29 +105,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, KeyboardListenerDelegate, NS
         //        self.preferencesWindowController.showWindow(self)
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
-    
-    func onTrigger() { //pass down modifier keys on trigger
-        
-        //trigger
-        if self.swindler != nil {
-//            AppDelegate.focusedWindow = swindler.frontmostApplication.value?.focusedWindow.value
-            
-//            functionalityManager = FunctionalityManager(swindler: self.swindler)
-            //            NSApplication.shared.activate(ignoringOtherApps: true)
-        }
-    }
-    func onModifiers(flags: [NSEvent.ModifierFlags]) {
-        if functionalityManager != nil {
-//            functionalityManager!.setModifierFlags(flags)
-        }
-    }
-    func onTriggerEnded() {
-        guard self.functionalityManager != nil else { return }
-        functionalityManager?.stop()
-        functionalityManager = nil
-        //        NSRunningApplication(processIdentifier: processIdentifier())?.activate(options: .activateIgnoringOtherApps)
-    }
-    
     
     func checkAccessibilityPermissions() -> Bool {
         if AXIsProcessTrusted() {

@@ -7,13 +7,10 @@
 
 import Foundation
 import Cocoa
-import Swindler
 import Signals
 import AXSwift
 
 class FunctionalityManager {
-    
-    private var swindler: Swindler.State
     private var windowMover:WindowMover?
     private var quickPicker:QuickPicker?
     
@@ -25,14 +22,10 @@ class FunctionalityManager {
     let onData = Signal<(data:NSData, error:NSError)>()
     let onProgress = Signal<Float>()
     
-    init(swindler: Swindler.State) {
-        
-        self.swindler = swindler
-        
-        if UserPreferences.shared.quickPickerEnabled {
-            //            self.quickPicker = QuickPicker()
-        }
-        
+    
+    
+    init() {
+        self.quickPicker = QuickPicker()
         self.windowMover = WindowMover()
     }
     
@@ -46,6 +39,7 @@ class FunctionalityManager {
         NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { event in
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
             self.windowMover?.setModifierFlags(flags)
+            self.quickPicker?.setModifierFlags(flags)
         }
         
     }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Swindler
 import AppKit
 import AXSwift
 import SwiftUI
@@ -16,12 +15,13 @@ func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirecti
     
     let window:NSRect!
     if let x = try? windowElement.getMultipleAttributes(.frame)[.frame] as? NSRect {
-        window = x.toCocoaCoord()
+        window = x
     } else {
         return false
     }
     
-    let screen = getAppScreen(window: getScreen(window: window)!.frame)
+    let screen = getAppScreenFromSystem(window)
+    //getAppScreen(window: getScreen(window: window)!.frame)
     
     let allScreens = NSScreen.screens.map({NSRect(origin: $0.frame.origin, size: CGSize(width: $0.frame.width, height: $0.frame.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)))})
     
@@ -58,39 +58,33 @@ func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirecti
     return false
 }
 // take in System coordinates
-func getAppScreen(window:NSRect) ->NSRect {
+func getAppScreenFromSystem(_ appWindow:NSRect) ->NSRect {
     let menuHeight = (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)
-    return NSRect(origin: NSPoint(x: window.minX, y: window.minY + menuHeight), size: CGSize(width: window.width, height: window.height - menuHeight))
+    let window = getCocoaScreen(appWindow)!.toSystemCoord()
+    let rec = NSRect(origin: NSPoint(x: window.minX, y: window.minY + menuHeight), size: CGSize(width: window.width, height: window.height - menuHeight))
+    return rec
 }
-
-func getScreen(window:NSRect) -> NSScreen? {
+//gives out cocoa coordinates
+func getCocoaScreen(_ window:NSRect) -> NSRect? {
     
     let i = NSScreen.screens.map({ i -> Float in
         let ii = i.frame.intersection(window)
         return Float(ii.width * ii.height)
     })
     
-    return NSScreen.screens[i.firstIndex(of: i.max()!)!]
+    return NSScreen.screens[i.firstIndex(of: i.max()!)!].frame
 }
 
 extension NSRect {
     
     func toCocoaCoord() -> NSRect {
         let rect = self
-        print("test: \(rect)")
         return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - (rect.minY + self.height)), size: rect.size)
     }
     func toSystemCoord() -> NSRect{
         let rect = self
         return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - (rect.minY + self.height)), size: rect.size)
     }
-}
-func toCocoaCoord(rect: NSRect) -> NSRect {
-    return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - rect.minY), size: rect.size)
-}
-
-func toSystemCoord(rect: NSRect) -> NSRect{
-    return NSRect(origin: CGPoint(x: rect.minX, y: NSScreen.screens.map({$0.frame.height}).max()! - rect.minY), size: rect.size)
 }
 
 func getSnapLocationToScreen(location: SnapLocation, screen: NSRect) -> CGRect {
