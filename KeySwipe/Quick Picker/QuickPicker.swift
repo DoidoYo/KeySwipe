@@ -61,7 +61,7 @@ class QuickPicker {
         //exit if disabled
         if !UserPreferences.shared.quickPickerEnabled {
             if self.mouseListener != nil {
-                NSEvent.removeMonitor(mouseListener)
+                NSEvent.removeMonitor(mouseListener as Any)
                 mouseListener = nil
             }
             return

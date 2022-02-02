@@ -69,9 +69,9 @@ class WindowMover {
     
     private static var snapOverlayWindow:SnapOverlayWindow = SnapOverlayWindow(contentRect: NSRect(x: 0, y: 0, width: 0, height: 0))
     
-    func scrollWheelEvent(event:NSEvent) {
+    func scrollWheelEvent(event:NSEvent) -> Bool {
         //dont respond to momentum scrolling
-        if event.momentumPhase != NSEvent.Phase(rawValue: 0) { return }
+        if event.momentumPhase != NSEvent.Phase(rawValue: 0) { return false }
         
         //update hit if mouse position changed or update flag is set
         if lastLoc != NSEvent.mouseLocation || update {
@@ -96,7 +96,6 @@ class WindowMover {
                         overTop = boundBox.contains(pointBox)
                     }
                 }
-                
                 //get associated window //returns focused window if modifier is pressed, else it uses window that the cursor is over its titlebar
                 self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentUI : nil)
                 
@@ -115,13 +114,13 @@ class WindowMover {
         //ignore if modifier key is NOT pressed and mouse NOT over topbar
         //        if overTop == false && modifierFlags.contains(WindowMover.activatingModifier) == false { return }
         //state can only change if window is selected
-        if self.windowToMove == nil { return }
+        if self.windowToMove == nil { return false }
         
         // Check if scroll is triggered from mouse wheel
         // https://stackoverflow.com/a/13981577
         if event.phase == NSEvent.Phase.init(rawValue: 0) &&
             event.momentumPhase == NSEvent.Phase.init(rawValue: 0) {
-            return
+            return false
         }
         //trackpad gesture
         if event.phase == NSEvent.Phase.mayBegin { //two fingers down, but not moving
@@ -156,6 +155,7 @@ class WindowMover {
             // Call the delegate method
             self.onTrackpadScrollGestureEnded()
         }
+        return true
     }
     
     func getMainWindow() -> UIElement? {
@@ -175,7 +175,7 @@ class WindowMover {
     
     func getParentWindow(element:UIElement) -> UIElement? {
         if let parent = try? element.getMultipleAttributes(.topLevelUIElement)[.topLevelUIElement] as? UIElement {
-            if let label = try? parent.getMultipleAttributes(.labelValue)[.labelValue] as? String {
+            if (try? parent.getMultipleAttributes(.labelValue)[.labelValue] as? String) != nil {
                 //                print(label)
             }
             return parent
