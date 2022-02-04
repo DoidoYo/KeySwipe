@@ -13,20 +13,20 @@ import SwiftUI
 func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirection) -> Bool {
 //    let allScreens = NSScreen.screens.map({$0.frame})
     
-    let window:NSRect!
+    var window:NSRect!
     if let x = try? windowElement.getMultipleAttributes(.frame)[.frame] as? NSRect {
         window = x
     } else {
         return false
     }
-    
+    //get current screen w/ menu bar subtracted that the window belongs to
     let screen = getAppScreenFromSystem(window)
-    //getAppScreen(window: getScreen(window: window)!.frame)
+    //get all screens without the topbar - and convert to system coord
+    let allScreens = NSScreen.screens.map({NSRect(origin: $0.frame.origin, size: CGSize(width: $0.frame.width, height: $0.frame.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0))).toSystemCoord()})
     
-    let allScreens = NSScreen.screens.map({NSRect(origin: $0.frame.origin, size: CGSize(width: $0.frame.width, height: $0.frame.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)))})
-    
-    let mult = CGRect(x: (window.minX - (screen.minX))/(screen.width), y: (window.minY - (screen.minY))/(screen.height), width: window.width/(screen.width), height: window.height/(screen.height))
+    let mult = CGRect(x: (window.minX - screen.minX)/screen.width, y: (window.minY - screen.minY)/screen.height, width: window.width/(screen.width), height: window.height/(screen.height))
 
+    //all calculation done in system coord
     switch direction {
     case .UP:
         break //TODO
@@ -37,8 +37,8 @@ func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirecti
             let mScreen = allScreens[i]
             let rect = CGRect(x: mScreen.minX + (mult.minX * mScreen.width), y: mScreen.minY + (mult.minY * mScreen.height), width: mult.width * mScreen.width, height: mult.height * mScreen.height)
 
-            let _ = try? windowElement.setAttribute(.position, value: rect.toSystemCoord().origin)
-            let _ = try? windowElement.setAttribute(.size, value: rect.toSystemCoord().size)
+            let _ = try? windowElement.setAttribute(.position, value: rect.origin)
+            let _ = try? windowElement.setAttribute(.size, value: rect.size)
             return true
         }
         break
@@ -47,8 +47,8 @@ func moveWindowToScreen(window windowElement: UIElement, direction: SwipeDirecti
             let mScreen = allScreens[i]
             let rect = CGRect(x: mScreen.minX + (mult.minX * mScreen.width), y: mScreen.minY + (mult.minY * mScreen.height), width: mult.width * mScreen.width, height: mult.height * mScreen.height)
 
-            let _ = try? windowElement.setAttribute(.position, value: rect.toSystemCoord().origin)
-            let _ = try? windowElement.setAttribute(.size, value: rect.toSystemCoord().size)
+            let _ = try? windowElement.setAttribute(.position, value: rect.origin)
+            let _ = try? windowElement.setAttribute(.size, value: rect.size)
             return true
         }
         break

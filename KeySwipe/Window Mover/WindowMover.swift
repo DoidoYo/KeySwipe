@@ -88,16 +88,16 @@ class WindowMover {
                 overTop = isTop(element: element)
                 
                 //check if mouse 24px from top of window
-                let parentUI = getParentWindow(element: element)
+                let parentWindow = getWindow(fromElement: element)
                 if overTop == false {
-                    if let r = try? parentUI?.getMultipleAttributes(.frame)[.frame] as? CGRect {
+                    if let r = try? parentWindow?.getMultipleAttributes(.frame)[.frame] as? CGRect {
                         let boundBox = NSRect(x: r.minX, y: r.minY, width: r.width, height: 26).toCocoaCoord()
                         let pointBox = NSRect(x: NSEvent.mouseLocation.x, y: NSEvent.mouseLocation.y, width: 0, height: 0)
                         overTop = boundBox.contains(pointBox)
                     }
                 }
                 //get associated window //returns focused window if modifier is pressed, else it uses window that the cursor is over its titlebar
-                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentUI : nil)
+                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentWindow : nil)
                 
                 if self.windowToMove != nil {
                     self.windowToMoveFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
@@ -173,12 +173,16 @@ class WindowMover {
         return nil
     }
     
-    func getParentWindow(element:UIElement) -> UIElement? {
-        if let parent = try? element.getMultipleAttributes(.topLevelUIElement)[.topLevelUIElement] as? UIElement {
-            if (try? parent.getMultipleAttributes(.labelValue)[.labelValue] as? String) != nil {
-                //                print(label)
+    func getWindow(fromElement element:UIElement)->UIElement? {
+        //if element is already the window, return it
+        if let me = try? element.getMultipleAttributes(.role)[.role] as? String {
+            if me == "AXWindow" {
+                return element
             }
-            return parent
+        }
+        //else try and get its window
+        if let win = try? element.getMultipleAttributes(.window)[.window] as? UIElement {
+            return win
         }
         return nil
     }
