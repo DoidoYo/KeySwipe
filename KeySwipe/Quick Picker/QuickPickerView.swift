@@ -57,14 +57,20 @@ struct ButtonImage: View {
             }
         })
             .padding(.all, 0.0)
-            .background(content: {
-                Color.clear
-                if let application = application {
-                    if application.selected {
-                        Color.gray
-                    }
-                }
-            }).cornerRadius(6.0).buttonStyle(BlueButtonStyle())
+            .background(ChangeSelection(application: application))
+            .cornerRadius(6.0).buttonStyle(BlueButtonStyle())
+    }
+}
+
+struct ChangeSelection:View {
+    var application:Application?
+    var body: some View {
+        Color.clear
+        if let application = application {
+            if application.selected {
+                Color.gray
+            }
+        }
     }
 }
 

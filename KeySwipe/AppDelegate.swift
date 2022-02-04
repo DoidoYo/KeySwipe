@@ -27,7 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         ],
         style: .toolbarItems,
         animated: true,
-        hidesToolbarForSingleItem: false
+        hidesToolbarForSingleItem: true
     )
 
     static var applicationMetaData = AppSearcher().getAllApplications().sorted(by: {$0.name < $1.name})

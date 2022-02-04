@@ -46,8 +46,8 @@ class WindowMover {
     private var trackpadState = TrackpadState.idle
     
     private var modifierFlags = NSEvent.ModifierFlags()
-    private static let activatingModifier:NSEvent.ModifierFlags = .function
-    private static let smallGridModifier:NSEvent.ModifierFlags = .shift
+//    private static let activatingModifier:NSEvent.ModifierFlags = .function
+//    private static let smallGridModifier:NSEvent.ModifierFlags = .shift
     private var modifierTimeTimeoutTask: DispatchWorkItem?
     private var modifierTime = 0.2
     private var abortTimeTimeoutTask: DispatchWorkItem?
@@ -97,7 +97,7 @@ class WindowMover {
                     }
                 }
                 //get associated window //returns focused window if modifier is pressed, else it uses window that the cursor is over its titlebar
-                self.windowToMove = self.modifierFlags.contains(WindowMover.activatingModifier) ? getMainWindow() : (overTop ? parentWindow : nil)
+                self.windowToMove = self.modifierFlags.contains(UserPreferences.shared.windowMoverActivatingModifier) ? getMainWindow() : (overTop ? parentWindow : nil)
                 
                 if self.windowToMove != nil {
                     self.windowToMoveFrame = try? self.windowToMove?.getMultipleAttributes(.frame)[.frame] as? NSRect
@@ -246,7 +246,7 @@ class WindowMover {
             previousLocation = currentLocation
         }
         //get new snap location if swipe direction is valid
-        if modifierFlags.contains(WindowMover.smallGridModifier) {
+        if modifierFlags.contains(UserPreferences.shared.windowMoverSmallGridModifier) {
             if currentLocation == .NONE {
                 currentLocation = get3x3SnapLocation(currentLocation: currentLocation, swipeDirection: delta.direction)
             } else {
@@ -269,7 +269,7 @@ class WindowMover {
         //modifier timer and timeout timer
         self.modifierTimeTimeoutTask?.cancel()
         self.modifierTimeTimeoutTask = DispatchWorkItem {
-            if self.modifierFlags.contains(WindowMover.smallGridModifier) {
+            if self.modifierFlags.contains(UserPreferences.shared.windowMoverSmallGridModifier) {
                 self.currentLocation = self.modifierSelectionLocation
             } else {
                 self.trackpadState = .modifier
@@ -319,7 +319,7 @@ class WindowMover {
         // keyboard modified function moves window in thirds
         self.modifierTimeTimeoutTask?.cancel()
         self.modifierTimeTimeoutTask = DispatchWorkItem {
-            if self.modifierFlags.contains(WindowMover.smallGridModifier) {
+            if self.modifierFlags.contains(UserPreferences.shared.windowMoverSmallGridModifier) {
                 self.currentLocation = .THIRD_MIDDLE
                 self.modifierSelectionLocation = .THIRD_MIDDLE
                 WindowMover.snapOverlayWindow.alphaValue = 1
@@ -361,7 +361,7 @@ class WindowMover {
             break
         }
         
-        if self.modifierFlags.contains(WindowMover.smallGridModifier) {
+        if self.modifierFlags.contains(UserPreferences.shared.windowMoverSmallGridModifier) {
             WindowMover.snapOverlayWindow.alphaValue = 1
         }
         
@@ -400,7 +400,7 @@ class WindowMover {
     
     func setModifierFlags(_ flags:NSEvent.ModifierFlags) {
         // only set to none if changed
-        if !(self.modifierFlags.contains(WindowMover.smallGridModifier) && flags.contains(WindowMover.smallGridModifier)) {
+        if !(self.modifierFlags.contains(UserPreferences.shared.windowMoverSmallGridModifier) && flags.contains(UserPreferences.shared.windowMoverSmallGridModifier)) {
             self.currentLocation = .NONE
             self.modifierSelectionLocation = .NONE
             update = true

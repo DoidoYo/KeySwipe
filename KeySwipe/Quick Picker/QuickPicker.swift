@@ -21,7 +21,6 @@ class QuickPicker {
     private static var window:NSWindow!
     
     private var modifierFlags = NSEvent.ModifierFlags()
-    private static let activatingModifier:NSEvent.ModifierFlags = .control
     
     private var pickerStatus:PickerStatus = .hidden
     private var previousSelection = -1
@@ -69,7 +68,7 @@ class QuickPicker {
         
         // only set to none if changed
         //if it was turned on
-        if flags.contains(QuickPicker.activatingModifier) && !self.modifierFlags.contains(QuickPicker.activatingModifier){
+        if flags.contains(UserPreferences.shared.quickPickeractivatingModifier) && !self.modifierFlags.contains(UserPreferences.shared.quickPickeractivatingModifier){
             self.initialMousePosition = CGVector(point: NSEvent.mouseLocation)
             
             if self.mouseListener == nil {
@@ -78,8 +77,8 @@ class QuickPicker {
                 }
             }
             
-        } else if !flags.contains(QuickPicker.activatingModifier) && self.modifierFlags.contains(QuickPicker.activatingModifier) {
-            NSEvent.removeMonitor(mouseListener)
+        } else if !flags.contains(UserPreferences.shared.quickPickeractivatingModifier) && self.modifierFlags.contains(UserPreferences.shared.quickPickeractivatingModifier) {
+            NSEvent.removeMonitor(mouseListener as Any)
             mouseListener = nil
             //turned off
             stop() //reset items

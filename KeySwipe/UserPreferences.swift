@@ -28,6 +28,15 @@ final class UserPreferences:ObservableObject {
     private static let key_quickPickerEnabled = "quickPickerEnabled"
     private static let default_quickPickerEnabled:Bool = true //magnetude of swipes
     
+    private static let key_quickPickeractivatingModifier = "quickPickeractivatingModifier"
+    private static let default_quickPickeractivatingModifier:NSEvent.ModifierFlags = .control //magnetude of swipes
+    
+    private static let key_windowMoverActivatingModifier = "windowMoverActivatingModifier"
+    private static let default_windowMoverActivatingModifier:NSEvent.ModifierFlags = .function //magnetude of swipes
+    
+    private static let key_windowMoverSmallGridModifier = "windowMoverSmallGridModifier"
+    private static let default_windowMoverSmallGridModifier:NSEvent.ModifierFlags = .shift //magnetude of swipes
+    
     init() {
         let defaults = UserDefaults.standard
         
@@ -73,9 +82,49 @@ final class UserPreferences:ObservableObject {
         let quickPickerEnabled = defaults.object(forKey: UserPreferences.key_quickPickerEnabled) as? Bool
         if quickPickerEnabled == nil{
             self.quickPickerEnabled = UserPreferences.default_quickPickerEnabled
-            UserDefaults.standard.set(self.quickPickerEnabled, forKey: UserPreferences.key_quickPickerEnabled)
+            UserDefaults.standard.set(UserPreferences.default_quickPickerEnabled, forKey: UserPreferences.key_quickPickerEnabled)
         } else{
             self.quickPickerEnabled = quickPickerEnabled!
+        }
+        
+        let quickPickeractivatingModifier = defaults.object(forKey: UserPreferences.key_quickPickeractivatingModifier) as? NSEvent.ModifierFlags
+        if quickPickeractivatingModifier == nil{
+            self.quickPickeractivatingModifier = UserPreferences.default_quickPickeractivatingModifier
+            UserDefaults.standard.set(UserPreferences.default_quickPickeractivatingModifier.rawValue, forKey: UserPreferences.key_quickPickeractivatingModifier)
+        } else{
+            self.quickPickeractivatingModifier = quickPickeractivatingModifier!
+        }
+        
+        let windowMoverActivatingModifier = defaults.object(forKey: UserPreferences.key_windowMoverActivatingModifier) as? NSEvent.ModifierFlags
+        if windowMoverActivatingModifier == nil{
+            self.windowMoverActivatingModifier = UserPreferences.default_windowMoverActivatingModifier
+            UserDefaults.standard.set(UserPreferences.default_windowMoverActivatingModifier.rawValue, forKey: UserPreferences.key_windowMoverActivatingModifier)
+        } else{
+            self.windowMoverActivatingModifier = windowMoverActivatingModifier!
+        }
+        
+        let windowMoverSmallGridModifier = defaults.object(forKey: UserPreferences.key_windowMoverSmallGridModifier) as? NSEvent.ModifierFlags
+        if windowMoverSmallGridModifier == nil{
+            self.windowMoverSmallGridModifier = UserPreferences.default_windowMoverSmallGridModifier
+            UserDefaults.standard.set(self.windowMoverSmallGridModifier.rawValue, forKey: UserPreferences.key_windowMoverSmallGridModifier)
+        } else{
+            self.windowMoverSmallGridModifier = windowMoverSmallGridModifier!
+        }
+    }
+    @Published var windowMoverActivatingModifier: NSEvent.ModifierFlags {
+        didSet{
+            UserDefaults.standard.set(self.windowMoverActivatingModifier.rawValue, forKey: UserPreferences.key_windowMoverActivatingModifier)
+        }
+    }
+    @Published var windowMoverSmallGridModifier: NSEvent.ModifierFlags {
+        didSet{
+            UserDefaults.standard.set(self.windowMoverSmallGridModifier.rawValue, forKey: UserPreferences.key_windowMoverSmallGridModifier)
+        }
+    }
+    
+    @Published var quickPickeractivatingModifier: NSEvent.ModifierFlags {
+        didSet{
+            UserDefaults.standard.set(self.quickPickeractivatingModifier.rawValue, forKey: UserPreferences.key_quickPickeractivatingModifier)
         }
     }
     
